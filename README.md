@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="icons/logo.png" alt="Paste Apply Logo" width="128" height="128">
+</div>
+
 # 🚀 Paste Apply
 
 > **Automatically fill job application forms with your saved information**
@@ -129,18 +133,6 @@ For more details, see our [Privacy Policy](PRIVACY_POLICY.md).
 
 - Google Chrome (or Chromium-based browser)
 - Chrome version 88+ (for Manifest V3 support)
-
----
-
-## 📝 License
-
-[Add your license information here]
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
