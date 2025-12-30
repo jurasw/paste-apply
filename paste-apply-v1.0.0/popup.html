@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>paste apply - Job Application Auto-Fill</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>paste apply</h1>
+    <p class="subtitle">Job Application Auto-Fill</p>
+    
+    <form id="profileForm">
+      <div class="form-group">
+        <label for="resume">Resume/CV File</label>
+        <div style="width: 100%; box-sizing: border-box;">
+          <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" style="padding: 5px; width: 100%; box-sizing: border-box;">
+        </div>
+        <div id="resumeInfo" class="resume-info"></div>
+        <button type="button" id="parseResumeBtn" class="btn btn-primary" style="margin-top: 10px; width: 100%; display: none;">Auto-Fill Profile from Resume</button>
+        <p id="parseResumeHint" class="resume-hint" style="display: none; margin-top: 8px;">Click to extract your information and fill the profile fields below</p>
+      </div>
+      
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" placeholder="Enter your first name">
+      </div>
+      
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Enter your last name">
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email">
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+      </div>
+      
+      <div class="form-group">
+        <label for="github">GitHub URL</label>
+        <input type="url" id="github" name="github" placeholder="https://github.com/username">
+      </div>
+      
+      <div class="form-group">
+        <label for="linkedin">LinkedIn URL</label>
+        <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username">
+      </div>
+      
+      <div class="form-group">
+        <label for="portfolio">Portfolio URL</label>
+        <input type="url" id="portfolio" name="portfolio" placeholder="https://yourportfolio.com">
+      </div>
+      
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" placeholder="Enter your city">
+      </div>
+      
+      <div class="form-group">
+        <label for="country">Country</label>
+        <input type="text" id="country" name="country" placeholder="Enter your country">
+      </div>
+      
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">Save Profile</button>
+        <button type="button" id="fillBtn" class="btn btn-secondary">Fill Current Page</button>
+      </div>
+    </form>
+    
+    <div id="status" class="status"></div>
+    
+    <div class="tips">
+      <p><strong>Tips:</strong></p>
+      <ul>
+        <li>Look for the blue "Auto-Fill Form" button on job application pages</li>
+        <li>Or press <kbd>Ctrl+Shift+F</kbd> (Mac: <kbd>Cmd+Shift+F</kbd>) to fill forms</li>
+        <li>The extension matches fields by ID, name, label, and placeholder text</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script src="pdf.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
+

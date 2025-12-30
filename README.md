@@ -61,3 +61,25 @@ It matches common variations like "first-name", "first_name", "firstName", etc.
 - Make sure to review filled information before submitting forms
 - Your data is stored locally in Chrome's sync storage
 
+## Distribution
+
+To make the extension available for others to download:
+
+1. **Package the extension**:
+   ```bash
+   npm run package
+   ```
+   This creates a ZIP file ready for Chrome Web Store submission.
+
+2. **Publish to Chrome Web Store**:
+   - See `DISTRIBUTION.md` for detailed instructions
+   - Requires a one-time $5 developer fee
+   - Most professional and secure option
+
+3. **Alternative options**:
+   - Share the ZIP file directly (for advanced users)
+   - Host on GitHub Releases
+   - See `DISTRIBUTION.md` for all options
+
+For detailed distribution instructions, see [DISTRIBUTION.md](DISTRIBUTION.md)
+
