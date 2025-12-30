@@ -87,8 +87,28 @@ export function fillRadioButtonGroup(keywords, value) {
         if (!name) continue;
         const id = (radio.id || '').toLowerCase();
         const labelText = getLabelText(radio).toLowerCase();
-        const parentText = (radio.parentElement?.textContent || '').toLowerCase();
-        const searchText = `${id} ${labelText} ${parentText}`;
+        let parentText = '';
+        let ancestorText = '';
+        let parent = radio.parentElement;
+        for (let i = 0; i < 5 && parent; i++) {
+            const text = (parent.textContent || '').toLowerCase();
+            if (i === 0) {
+                parentText = text;
+            }
+            ancestorText += ' ' + text;
+            const dataAttrs = Array.from(parent.attributes)
+                .filter(attr => attr.name.startsWith('data-'))
+                .map(attr => attr.value.toLowerCase())
+                .join(' ');
+            ancestorText += ' ' + dataAttrs;
+            const prevSibling = parent.previousElementSibling;
+            if (prevSibling) {
+                const siblingText = (prevSibling.textContent || '').toLowerCase();
+                ancestorText += ' ' + siblingText;
+            }
+            parent = parent.parentElement;
+        }
+        const searchText = `${id} ${labelText} ${parentText} ${ancestorText}`;
         let foundKeyword = false;
         for (const keyword of keywords) {
             if (searchText.includes(keyword.toLowerCase())) {

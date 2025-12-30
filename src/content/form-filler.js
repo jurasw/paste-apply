@@ -101,8 +101,8 @@ export function fillForm() {
             { key: 'github', label: 'GitHub', keywords: fieldMappings.github, labelKeywords: ['github', 'github profile', 'github url', 'github link'] },
             { key: 'linkedin', label: 'LinkedIn', keywords: fieldMappings.linkedin, labelKeywords: ['linkedin', 'linked-in', 'linkedin profile', 'linkedin url', 'linkedin link'] },
             { key: 'portfolio', label: 'Portfolio', keywords: fieldMappings.portfolio, labelKeywords: ['portfolio', 'website', 'portfolio url', 'portfolio link', 'personal website'] },
-            { key: 'city', label: 'City', keywords: fieldMappings.city, labelKeywords: ['city', 'location', 'location city', 'city field', 'town'] },
-            { key: 'country', label: 'Country', keywords: fieldMappings.country, labelKeywords: ['country', 'location country', 'country field', 'nation'] },
+            { key: 'country', label: 'Country', keywords: fieldMappings.country, labelKeywords: ['location country', 'country', 'country field', 'nation'] },
+            { key: 'city', label: 'City', keywords: fieldMappings.city, labelKeywords: ['location city', 'city', 'city field', 'town', 'location'] },
             { key: 'availability', label: 'Availability', keywords: fieldMappings.availability, labelKeywords: ['availability', 'notice period', 'notice-period', 'notice_period', 'notice', 'available', 'start date', 'start-date', 'start_date', 'when can you start', 'when can you join'] }
         ];
         for (const processor of fieldProcessors) {
