@@ -1,133 +1,132 @@
-# Jak udostępnić rozszerzenie innym użytkownikom
+# How to Make the Extension Available for Others to Download
 
-## Opcja 1: Chrome Web Store (Rekomendowane)
+## Option 1: Chrome Web Store (Recommended)
 
-### Krok 1: Przygotowanie pakietu
+### Step 1: Prepare the Package
 
-1. Utwórz folder z pakietem rozszerzenia:
+1. Create a folder with the extension package:
    ```bash
-   # Uruchom skrypt pakowania (jeśli istnieje)
+   # Run the packaging script (if available)
    npm run package
    
-   # LUB ręcznie:
-   # Utwórz folder "paste-apply-dist"
-   # Skopiuj wszystkie pliki oprócz node_modules, .git, itp.
+   # OR manually:
+   # Create a "paste-apply-dist" folder
+   # Copy all files except node_modules, .git, etc.
    ```
 
-2. Sprawdź, czy wszystkie pliki są na miejscu:
+2. Verify all required files are present:
    - manifest.json
    - background.js
    - content.js
    - popup.html, popup.js, popup.css
-   - icons/ (wszystkie ikony)
+   - icons/ (all icon files)
    - pdf.min.js, pdf.worker.min.js
-   - Wszystkie inne pliki .js
+   - All other .js files
 
-### Krok 2: Utworzenie konta deweloperskiego
+### Step 2: Create Developer Account
 
-1. Przejdź do [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
-2. Zaloguj się kontem Google
-3. Zapłać jednorazową opłatę $5 (tylko raz, na zawsze)
-4. Zaakceptuj umowę deweloperską
+1. Go to [Chrome Web Store Developer Dashboard](https://chrome.google.com/webstore/devconsole)
+2. Sign in with your Google account
+3. Pay a one-time $5 fee (only once, forever)
+4. Accept the developer agreement
 
-### Krok 3: Publikacja
+### Step 3: Publish
 
-1. W Developer Dashboard kliknij "Nowy element"
-2. Wybierz "Rozszerzenie Chrome"
-3. Prześlij plik ZIP z pakietem rozszerzenia
-4. Wypełnij informacje:
-   - **Nazwa**: paste apply - Job Application Auto-Fill
-   - **Opis**: Automatycznie wypełnia formularze aplikacji o pracę
-   - **Kategoria**: Productivity
-   - **Ikona**: Wybierz icon128.png
-   - **Zrzuty ekranu**: Dodaj 1-5 zrzutów ekranu rozszerzenia w działaniu
-   - **Promocja**: Opcjonalnie, większy obrazek promocyjny
+1. In Developer Dashboard, click "New Item"
+2. Select "Chrome Extension"
+3. Upload the ZIP file with the extension package
+4. Fill in the information:
+   - **Name**: paste apply - Job Application Auto-Fill
+   - **Description**: Automatically fills job application forms
+   - **Category**: Productivity
+   - **Icon**: Select icon128.png
+   - **Screenshots**: Add 1-5 screenshots of the extension in action
+   - **Promotional**: Optional, larger promotional image
 
-5. Dodaj szczegóły:
-   - **Privacy Policy URL**: (wymagane) Utwórz stronę z polityką prywatności
-   - **Website**: (opcjonalne) Twoja strona
-   - **Support Email**: Twój email
+5. Add details:
+   - **Privacy Policy URL**: (required) Create a page with privacy policy
+   - **Website**: (optional) Your website
+   - **Support Email**: Your email
 
-6. Prześlij do weryfikacji:
-   - Kliknij "Prześlij do weryfikacji"
-   - Czas weryfikacji: zwykle 1-3 dni robocze
+6. Submit for review:
+   - Click "Submit for Review"
+   - Review time: usually 1-3 business days
 
-### Krok 4: Po weryfikacji
+### Step 4: After Verification
 
-- Rozszerzenie będzie dostępne publicznie
-- Będziesz mógł śledzić statystyki pobrań
-- Możesz aktualizować wersje
+- Extension will be publicly available
+- You can track download statistics
+- You can update versions
 
-## Opcja 2: Udostępnienie pliku .crx (Dla zaawansowanych użytkowników)
+## Option 2: Share .crx File (For Advanced Users)
 
-### Krok 1: Pakowanie rozszerzenia
+### Step 1: Package the Extension
 
-1. Otwórz Chrome i przejdź do `chrome://extensions/`
-2. Włącz "Tryb dewelopera"
-3. Kliknij "Spakuj rozszerzenie"
-4. Wybierz folder z rozszerzeniem
-5. Chrome utworzy plik .crx i .pem (klucz prywatny)
+1. Open Chrome and go to `chrome://extensions/`
+2. Enable "Developer mode"
+3. Click "Pack extension"
+4. Select the extension folder
+5. Chrome will create a .crx file and .pem (private key)
 
-### Krok 2: Udostępnienie
+### Step 2: Share
 
-1. Umieść plik .crx na swojej stronie/Google Drive/Dropbox
-2. Użytkownicy muszą:
-   - Pobrać plik .crx
-   - Przeciągnąć go do `chrome://extensions/`
-   - Potwierdzić instalację
+1. Place the .crx file on your website/Google Drive/Dropbox
+2. Users need to:
+   - Download the .crx file
+   - Drag it to `chrome://extensions/`
+   - Confirm installation
 
-**UWAGA**: Chrome może blokować instalację .crx z zewnętrznych źródeł. Użytkownicy muszą włączyć tryb dewelopera.
+**WARNING**: Chrome may block .crx installation from external sources. Users must enable developer mode.
 
-## Opcja 3: GitHub Releases (Dla programistów)
+## Option 3: GitHub Releases (For Developers)
 
-1. Utwórz repozytorium na GitHub
-2. Dodaj pliki rozszerzenia
-3. Utwórz Release:
-   - Przejdź do "Releases" → "Create a new release"
-   - Dodaj tag wersji (np. v1.0.0)
-   - Dodaj opis
-   - Załącz plik ZIP z pakietem rozszerzenia
-4. Użytkownicy mogą:
-   - Pobrać ZIP
-   - Rozpakować
-   - Załadować jako "Load unpacked" w Chrome
+1. Create a repository on GitHub
+2. Add extension files
+3. Create a Release:
+   - Go to "Releases" → "Create a new release"
+   - Add version tag (e.g., v1.0.0)
+   - Add description
+   - Attach ZIP file with extension package
+4. Users can:
+   - Download ZIP
+   - Extract it
+   - Load as "Load unpacked" in Chrome
 
-## Wymagane pliki do publikacji
+## Required Files for Publication
 
 - ✅ manifest.json
 - ✅ background.js
 - ✅ content.js
 - ✅ popup.html, popup.js, popup.css
-- ✅ icons/ (wszystkie ikony)
+- ✅ icons/ (all icons)
 - ✅ pdf.min.js, pdf.worker.min.js
-- ✅ Wszystkie pliki .js z funkcjonalnością
+- ✅ All .js files with functionality
 
-## Polityka prywatności (Wymagana dla Chrome Web Store)
+## Privacy Policy (Required for Chrome Web Store)
 
-Utwórz prostą stronę HTML z polityką prywatności zawierającą:
+Create a simple HTML page with privacy policy containing:
 
-- Jakie dane są zbierane (tylko lokalnie w Chrome)
-- Jak dane są używane (tylko do wypełniania formularzy)
-- Czy dane są udostępniane (NIE - wszystko lokalnie)
-- Link do kontaktu
+- What data is collected (only locally in Chrome)
+- How data is used (only for filling forms)
+- Whether data is shared (NO - everything is local)
+- Contact link
 
-Przykład: "To rozszerzenie przechowuje wszystkie dane lokalnie w przeglądarce Chrome. Żadne dane nie są wysyłane na zewnętrzne serwery."
+Example: "This extension stores all data locally in Chrome browser. No data is sent to external servers."
 
-## Aktualizacje
+## Updates
 
-Po opublikowaniu, aby zaktualizować rozszerzenie:
+After publishing, to update the extension:
 
-1. Zaktualizuj wersję w manifest.json
-2. Utwórz nowy pakiet ZIP
-3. W Developer Dashboard kliknij "Upload Updated Package"
-4. Prześlij nowy plik ZIP
-5. Opcjonalnie dodaj notatki o zmianach
+1. Update version in manifest.json
+2. Create new ZIP package
+3. In Developer Dashboard click "Upload Updated Package"
+4. Upload new ZIP file
+5. Optionally add release notes
 
-## Najlepsze praktyki
+## Best Practices
 
-1. **Testuj przed publikacją**: Sprawdź rozszerzenie na różnych stronach
-2. **Dobre zrzuty ekranu**: Pokaż rozszerzenie w działaniu
-3. **Jasny opis**: Wyjaśnij, co robi rozszerzenie
-4. **Odpowiadaj na recenzje**: Użytkownicy docenią wsparcie
-5. **Regularne aktualizacje**: Naprawiaj błędy i dodawaj funkcje
-
+1. **Test before publishing**: Check extension on different websites
+2. **Good screenshots**: Show extension in action
+3. **Clear description**: Explain what the extension does
+4. **Respond to reviews**: Users appreciate support
+5. **Regular updates**: Fix bugs and add features

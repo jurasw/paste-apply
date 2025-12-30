@@ -1,7 +1,78 @@
 import { fillForm } from './content-form-filler';
+
+function isJobApplicationForm() {
+    const jobKeywords = [
+        'application', 'apply', 'resume', 'cv', 'curriculum', 'vitae',
+        'firstname', 'first-name', 'first_name', 'fname', 'given-name',
+        'lastname', 'last-name', 'last_name', 'lname', 'surname',
+        'email', 'e-mail', 'phone', 'telephone', 'mobile',
+        'github', 'linkedin', 'portfolio', 'website',
+        'position', 'job', 'career', 'employment', 'hire',
+        'cover-letter', 'coverletter', 'motivation',
+        'experience', 'education', 'qualification', 'skill'
+    ];
+    
+    const pageText = (document.body?.textContent || '').toLowerCase();
+    const pageTitle = (document.title || '').toLowerCase();
+    const pageUrl = (window.location.href || '').toLowerCase();
+    
+    const allText = `${pageText} ${pageTitle} ${pageUrl}`;
+    
+    const hasJobKeyword = jobKeywords.some(keyword => 
+        allText.includes(keyword)
+    );
+    
+    if (hasJobKeyword) {
+        return true;
+    }
+    
+    const formInputs = Array.from(document.querySelectorAll('input, textarea, select'));
+    let relevantFieldCount = 0;
+    
+    for (const input of formInputs) {
+        if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button' || input.type === 'file') {
+            continue;
+        }
+        
+        const id = (input.id || '').toLowerCase();
+        const name = (input.name || '').toLowerCase();
+        const placeholder = (input.placeholder || '').toLowerCase();
+        const label = input.labels?.[0]?.textContent?.toLowerCase() || '';
+        const ariaLabel = (input.getAttribute('aria-label') || '').toLowerCase();
+        
+        const fieldText = `${id} ${name} ${placeholder} ${label} ${ariaLabel}`;
+        
+        const hasRelevantField = jobKeywords.some(keyword => 
+            fieldText.includes(keyword)
+        );
+        
+        if (hasRelevantField) {
+            relevantFieldCount++;
+        }
+    }
+    
+    return relevantFieldCount >= 2;
+}
+
 export function createFillButton() {
     if (document.getElementById('job-app-autofill-btn'))
         return;
+    
+    chrome.storage.sync.get(['showAutoFillButton'], (result) => {
+        const showButton = result.showAutoFillButton !== false;
+        if (!showButton) {
+            return;
+        }
+        
+        if (!isJobApplicationForm()) {
+            return;
+        }
+        
+        createButtonElement();
+    });
+}
+
+function createButtonElement() {
     const button = document.createElement('button');
     button.id = 'job-app-autofill-btn';
     const text = document.createElement('span');
@@ -184,6 +255,11 @@ export function initButton() {
     if (document.getElementById('job-app-autofill-btn'))
         return;
     if (document.body) {
-        createFillButton();
+        chrome.storage.sync.get(['showAutoFillButton'], (result) => {
+            const showButton = result.showAutoFillButton !== false;
+            if (showButton && isJobApplicationForm()) {
+                createFillButton();
+            }
+        });
     }
 }
