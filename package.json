@@ -4,8 +4,8 @@
   "description": "Job Application Auto-Fill Chrome Extension",
   "scripts": {
     "build": "npm run build:bundle",
-    "build:bundle": "node simple-bundle.js",
-    "package": "bash package-extension.sh"
+    "build:bundle": "node scripts/simple-bundle.js",
+    "package": "bash scripts/package-extension.sh"
   }
 }
 

@@ -4,8 +4,9 @@
 
 EXTENSION_NAME="paste-apply"
 VERSION=$(grep '"version"' manifest.json | cut -d'"' -f4)
-OUTPUT_DIR="${EXTENSION_NAME}-v${VERSION}"
-ZIP_FILE="${EXTENSION_NAME}-v${VERSION}.zip"
+DIST_DIR="dist"
+OUTPUT_DIR="${DIST_DIR}/${EXTENSION_NAME}-v${VERSION}"
+ZIP_FILE="${DIST_DIR}/${EXTENSION_NAME}-v${VERSION}.zip"
 
 echo "📦 Pakowanie rozszerzenia ${EXTENSION_NAME} wersja ${VERSION}..."
 
@@ -15,42 +16,31 @@ mkdir -p "$OUTPUT_DIR"
 # Skopiuj wymagane pliki
 echo "📋 Kopiowanie plików..."
 
-# Pliki główne
+# Manifest
 cp manifest.json "$OUTPUT_DIR/"
-cp background.js "$OUTPUT_DIR/"
-cp content.js "$OUTPUT_DIR/"
-cp content-button.js "$OUTPUT_DIR/" 2>/dev/null || true
-cp content-field-finder.js "$OUTPUT_DIR/" 2>/dev/null || true
-cp content-field-matcher.js "$OUTPUT_DIR/" 2>/dev/null || true
-cp content-form-filler.js "$OUTPUT_DIR/" 2>/dev/null || true
-cp popup.html "$OUTPUT_DIR/"
-cp popup.js "$OUTPUT_DIR/"
-cp popup.css "$OUTPUT_DIR/"
-cp popup-form-filler.js "$OUTPUT_DIR/" 2>/dev/null || true
-cp popup-resume-parser.js "$OUTPUT_DIR/" 2>/dev/null || true
-cp popup-utils.js "$OUTPUT_DIR/" 2>/dev/null || true
-cp pdf.min.js "$OUTPUT_DIR/"
-cp pdf.worker.min.js "$OUTPUT_DIR/"
 
-# Folder z ikonami
-if [ -d "icons" ]; then
-    cp -r icons "$OUTPUT_DIR/"
+# Katalog src
+if [ -d "src" ]; then
+    cp -r src "$OUTPUT_DIR/"
 fi
 
 # Usuń niepotrzebne pliki (jeśli istnieją)
 cd "$OUTPUT_DIR"
 rm -f package.json
 rm -f README.md
+rm -f PRIVACY_POLICY.md
 rm -f DISTRIBUTION.md
-rm -f package-extension.sh
-rm -f .gitignore
+rm -rf scripts 2>/dev/null || true
+rm -rf screenshots 2>/dev/null || true
 rm -rf node_modules 2>/dev/null || true
 rm -rf .git 2>/dev/null || true
-cd ..
+cd ../..
 
 # Utwórz plik ZIP
 echo "🗜️  Tworzenie pliku ZIP..."
-zip -r "$ZIP_FILE" "$OUTPUT_DIR" -x "*.DS_Store" "*.git*" "node_modules/*"
+cd "$DIST_DIR"
+zip -r "${EXTENSION_NAME}-v${VERSION}.zip" "${EXTENSION_NAME}-v${VERSION}" -x "*.DS_Store" "*.git*" "node_modules/*"
+cd ..
 
 # Wyświetl informacje
 echo ""

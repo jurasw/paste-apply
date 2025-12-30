@@ -69,27 +69,27 @@ function bundleFiles(files, outputFile, baseDir = '.') {
 }
 
 const contentFiles = [
-  'content/field-matcher.js',
-  'content/utils.js',
-  'content/field-finder.js',
-  'content/form-filler.js',
-  'content/button.js',
-  'content/init.js',
-  'content.js'
+  'src/content/field-matcher.js',
+  'src/content/utils.js',
+  'src/content/field-finder.js',
+  'src/content/form-filler.js',
+  'src/content/button.js',
+  'src/content/init.js',
+  'src/content.js'
 ];
 
 const popupFiles = [
-  'popup/utils.js',
-  'popup/validation.js',
-  'popup/field-matcher.js',
-  'popup/field-filler.js',
-  'popup/field-finder.js',
-  'popup/file-upload.js',
-  'popup/resume-parser.js',
-  'popup/form-filler.js',
-  'popup/init.js',
-  'popup.js'
+  'src/popup/utils.js',
+  'src/popup/validation.js',
+  'src/popup/field-matcher.js',
+  'src/popup/field-filler.js',
+  'src/popup/field-finder.js',
+  'src/popup/file-upload.js',
+  'src/popup/resume-parser.js',
+  'src/popup/form-filler.js',
+  'src/popup/init.js',
+  'src/popup.js'
 ];
 
-bundleFiles(contentFiles, 'content.js');
-bundleFiles(popupFiles, 'popup.js');
+bundleFiles(contentFiles, 'src/content.js');
+bundleFiles(popupFiles, 'src/popup.js');

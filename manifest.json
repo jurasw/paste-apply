@@ -13,32 +13,32 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background.js"
   },
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/popup.html",
     "default_icon": {
-      "16": "icons/logo.png",
-      "48": "icons/logo.png",
-      "128": "icons/logo.png"
+      "16": "src/icons/logo.png",
+      "48": "src/icons/logo.png",
+      "128": "src/icons/logo.png"
     }
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["src/content.js"],
       "run_at": "document_idle",
       "all_frames": true
     }
   ],
   "icons": {
-    "16": "icons/logo.png",
-    "48": "icons/logo.png",
-    "128": "icons/logo.png"
+    "16": "src/icons/logo.png",
+    "48": "src/icons/logo.png",
+    "128": "src/icons/logo.png"
   },
   "web_accessible_resources": [
     {
-      "resources": ["pdf.worker.min.js"],
+      "resources": ["src/lib/pdf.worker.min.js"],
       "matches": ["<all_urls>"]
     }
   ],
