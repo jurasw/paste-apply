@@ -85,10 +85,21 @@ export function uploadResumeFile(base64Data, fileName, fileType) {
 export function fillForm() {
     console.log('[AutoFill] Starting form fill in frame:', window.location.href);
     console.log('[AutoFill] Found inputs:', document.querySelectorAll('input, textarea, select').length);
-    chrome.storage.sync.get([
-        'firstName', 'lastName', 'email', 'phone',
-        'github', 'linkedin', 'portfolio', 'city', 'country', 'availability', 'resume'
-    ], (data) => {
+    
+    if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.sync) {
+        console.warn('[AutoFill] Chrome storage not available');
+        return;
+    }
+    
+    try {
+        chrome.storage.sync.get([
+            'firstName', 'lastName', 'email', 'phone',
+            'github', 'linkedin', 'portfolio', 'city', 'country', 'availability', 'resume'
+        ], (data) => {
+            if (chrome.runtime.lastError) {
+                console.warn('[AutoFill] Storage error:', chrome.runtime.lastError.message);
+                return;
+            }
         const profileData = data;
         console.log('[AutoFill] Profile data:', Object.keys(profileData).filter(k => profileData[k]));
         let filledCount = 0;
@@ -126,14 +137,8 @@ export function fillForm() {
                 console.log(`[AutoFill] No value for ${processor.label}`);
             }
         }
-        chrome.storage.local.get(['resumeFile', 'resumeFileName', 'resumeFileType'], (resumeData) => {
-            const resume = resumeData;
-            if (resume.resumeFile) {
-                if (uploadResumeFile(resume.resumeFile, resume.resumeFileName || 'resume.pdf', resume.resumeFileType || 'application/pdf')) {
-                    filledCount++;
-                    results.push('Resume File');
-                }
-            }
+        
+        const processCheckboxes = () => {
             const requiredCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"][required]'));
             for (const checkbox of requiredCheckboxes) {
                 if (!checkbox.checked) {
@@ -153,6 +158,32 @@ export function fillForm() {
             else {
                 showNotification('⚠ Could not find any form fields to fill. Check console for details.', false);
             }
+        };
+        
+        if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+            try {
+                chrome.storage.local.get(['resumeFile', 'resumeFileName', 'resumeFileType'], (resumeData) => {
+                    if (chrome.runtime.lastError) {
+                        processCheckboxes();
+                        return;
+                    }
+                    const resume = resumeData;
+                    if (resume.resumeFile) {
+                        if (uploadResumeFile(resume.resumeFile, resume.resumeFileName || 'resume.pdf', resume.resumeFileType || 'application/pdf')) {
+                            filledCount++;
+                            results.push('Resume File');
+                        }
+                    }
+                    processCheckboxes();
+                });
+            } catch (e) {
+                processCheckboxes();
+            }
+        } else {
+            processCheckboxes();
+        }
         });
-    });
+    } catch (e) {
+        console.warn('[AutoFill] Error accessing storage:', e);
+    }
 }

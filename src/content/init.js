@@ -2,6 +2,36 @@ import { fillForm } from './form-filler';
 import { createFillButton, initButton } from './button';
 import { isExcludedDomain } from './utils';
 
+function isEmailInboxPage() {
+  const hostname = window.location.hostname.toLowerCase();
+  
+  if (hostname === "mail.google.com" || hostname.endsWith(".mail.google.com")) {
+    return true;
+  }
+  
+  if (hostname === "gmail.com" || hostname.endsWith(".gmail.com")) {
+    return true;
+  }
+  
+  if (hostname === "outlook.live.com" || hostname.endsWith(".outlook.live.com")) {
+    return true;
+  }
+  
+  if (hostname === "mail.live.com" || hostname.endsWith(".mail.live.com")) {
+    return true;
+  }
+  
+  if (hostname === "outlook.com" || hostname.endsWith(".outlook.com")) {
+    return true;
+  }
+  
+  if (hostname === "hotmail.com" || hostname.endsWith(".hotmail.com")) {
+    return true;
+  }
+  
+  return false;
+}
+
 function isJobApplicationForm() {
     if (isExcludedDomain(window.location.hostname)) {
         return false;
@@ -13,9 +43,13 @@ function isJobApplicationForm() {
     
     const allText = `${pageText} ${pageTitle} ${pageUrl}`;
     
-    const hasResumeOrCv = allText.includes('resume') || allText.includes('cv');
+    const hasKeyword = allText.includes('resume') || 
+                      allText.includes('cv') || 
+                      allText.includes('name') || 
+                      allText.includes('imie') ||
+                      allText.includes('imię');
     
-    if (!hasResumeOrCv) {
+    if (!hasKeyword) {
         return false;
     }
     
@@ -29,15 +63,31 @@ function isJobApplicationForm() {
         inputCount++;
     }
     
-    return inputCount >= 3;
+    return inputCount >= 4;
+}
+
+function removeButtonIfOnEmailInbox() {
+    if (isEmailInboxPage()) {
+        const button = document.getElementById('job-app-autofill-btn');
+        if (button) {
+            button.remove();
+        }
+    }
 }
 
 export function initialize() {
     if (document.body) {
         initButton();
+        removeButtonIfOnEmailInbox();
     } else {
-        document.addEventListener('DOMContentLoaded', initButton);
+        document.addEventListener('DOMContentLoaded', () => {
+            initButton();
+            removeButtonIfOnEmailInbox();
+        });
     }
+    
+    window.addEventListener('hashchange', removeButtonIfOnEmailInbox);
+    window.addEventListener('popstate', removeButtonIfOnEmailInbox);
     
     if (document.body) {
         const observer = new MutationObserver((mutations) => {
@@ -70,11 +120,20 @@ export function initialize() {
                 return;
             }
             
+            if (isEmailInboxPage()) {
+                if (button) {
+                    button.remove();
+                }
+                return;
+            }
+            
             if (!button && document.body) {
+                if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.sync) {
+                    return;
+                }
                 try {
                     chrome.storage.sync.get(['showAutoFillButton'], (result) => {
                         if (chrome.runtime.lastError) {
-                            console.warn('[AutoFill] Storage error:', chrome.runtime.lastError.message);
                             return;
                         }
                         const showButton = result.showAutoFillButton !== false;
@@ -83,7 +142,6 @@ export function initialize() {
                         }
                     });
                 } catch (e) {
-                    console.warn('[AutoFill] Extension context invalidated:', e.message);
                 }
             }
         });
@@ -102,48 +160,52 @@ export function initialize() {
         }
     });
     
-    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-        if (request.action === 'updateButtonVisibility') {
-            const existingButton = document.getElementById('job-app-autofill-btn');
-            try {
-                chrome.storage.sync.get(['showAutoFillButton'], (result) => {
-                    if (chrome.runtime.lastError) {
-                        console.warn('[AutoFill] Storage error:', chrome.runtime.lastError.message);
-                        sendResponse({ success: true });
-                        return;
-                    }
-                    const showButton = result.showAutoFillButton !== false;
-                    if (showButton && isJobApplicationForm()) {
-                        if (!existingButton) {
-                            createFillButton();
-                        }
-                    } else {
-                        if (existingButton) {
-                            existingButton.remove();
-                        }
-                    }
+    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+            if (request.action === 'updateButtonVisibility') {
+                const existingButton = document.getElementById('job-app-autofill-btn');
+                if (typeof chrome === 'undefined' || !chrome.storage || !chrome.storage.sync) {
                     sendResponse({ success: true });
-                });
-            } catch (e) {
-                console.warn('[AutoFill] Extension context invalidated:', e.message);
-                sendResponse({ success: true });
+                    return true;
+                }
+                try {
+                    chrome.storage.sync.get(['showAutoFillButton'], (result) => {
+                        if (chrome.runtime.lastError) {
+                            sendResponse({ success: true });
+                            return;
+                        }
+                        const showButton = result.showAutoFillButton !== false;
+                        if (showButton && isJobApplicationForm() && !isEmailInboxPage()) {
+                            if (!existingButton) {
+                                createFillButton();
+                            }
+                        } else {
+                            if (existingButton) {
+                                existingButton.remove();
+                            }
+                        }
+                        sendResponse({ success: true });
+                    });
+                } catch (e) {
+                    sendResponse({ success: true });
+                }
+                return true;
             }
-            return true;
-        }
-        if (request.action === 'fillForm') {
-            console.log('[AutoFill] Received fillForm command from background');
-            try {
-                fillForm();
-                sendResponse({ success: true, message: 'Form fill initiated' });
+            if (request.action === 'fillForm') {
+                console.log('[AutoFill] Received fillForm command from background');
+                try {
+                    fillForm();
+                    sendResponse({ success: true, message: 'Form fill initiated' });
+                }
+                catch (error) {
+                    console.error('Error in fillForm:', error);
+                    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                    sendResponse({ success: false, error: errorMessage });
+                }
+                return true;
             }
-            catch (error) {
-                console.error('Error in fillForm:', error);
-                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-                sendResponse({ success: false, error: errorMessage });
-            }
-            return true;
-        }
-        return false;
-    });
+            return false;
+        });
+    }
 }
 
