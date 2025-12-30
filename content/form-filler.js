@@ -1,5 +1,6 @@
-import { fieldMappings, getLabelText } from './content-field-matcher';
-import { findFieldByKeywords, findFieldByLabelText, findFieldByTextSearch } from './content-field-finder';
+import { fieldMappings, getLabelText } from './field-matcher';
+import { findFieldByKeywords, findFieldByLabelText, findFieldByTextSearch } from './field-finder';
+import { showNotification } from './utils';
 export { findFieldByKeywords, findFieldByLabelText, findFieldByTextSearch };
 export function uploadResumeFile(base64Data, fileName, fileType) {
     const fileInputs = Array.from(document.querySelectorAll('input[type="file"]'));
@@ -80,13 +81,6 @@ export function uploadResumeFile(base64Data, fileName, fileType) {
         console.error('[AutoFill] Error uploading resume file:', error);
         return false;
     }
-}
-function showNotification(message, isSuccess) {
-    const notification = document.createElement('div');
-    notification.style.cssText = `position:fixed;top:20px;right:20px;background:${isSuccess ? '#4CAF50' : '#ff9800'};color:white;padding:15px 20px;z-index:10000;box-shadow:0 4px 6px rgba(0,0,0,0.1);font-family:Arial,sans-serif;font-size:14px;`;
-    notification.textContent = message;
-    document.body.appendChild(notification);
-    setTimeout(() => notification.remove(), isSuccess ? 3000 : 5000);
 }
 export function fillForm() {
     console.log('[AutoFill] Starting form fill in frame:', window.location.href);

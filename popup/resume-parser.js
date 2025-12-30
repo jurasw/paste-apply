@@ -1,4 +1,4 @@
-import { getElementById, showStatus, getPdfJsLib, populateFormFields, loadResumeData } from './popup-utils';
+import { getElementById, showStatus, getPdfJsLib, populateFormFields, loadResumeData } from './utils';
 export function parseResumeText(text) {
     const result = {};
     const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g;

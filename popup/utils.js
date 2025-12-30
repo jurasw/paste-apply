@@ -1,6 +1,6 @@
 export const profileFields = [
     'firstName', 'lastName', 'email', 'phone',
-    'github', 'linkedin', 'portfolio', 'location'
+    'github', 'linkedin', 'portfolio', 'location', 'city', 'country'
 ];
 export const resizeDimensions = { width: '400px', height: '600px' };
 export const maxFileSizeMb = 7;
@@ -50,4 +50,26 @@ export function populateFormFields(data) {
             element.value = data[field];
         }
     });
+}
+export function normalizeUrl(url) {
+    if (!url || !url.trim()) {
+        return url;
+    }
+    url = url.trim();
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+    }
+    if (url.includes('linkedin.com')) {
+        if (!url.startsWith('www.')) {
+            return 'https://www.' + url;
+        }
+        return 'https://' + url;
+    }
+    if (url.includes('github.com')) {
+        return 'https://' + url;
+    }
+    if (url.includes('.') && (url.includes('/') || /^[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.[a-zA-Z]{2,}/.test(url))) {
+        return 'https://' + url;
+    }
+    return url;
 }

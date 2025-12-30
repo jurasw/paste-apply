@@ -1,22 +1,8 @@
-import { fillForm } from './content-form-filler';
+import { fillForm } from './form-filler';
+import { isExcludedDomain } from './utils';
 
 function isJobApplicationForm() {
-    const excludedDomains = [
-        'youtube.com', 'youtu.be', 'www.youtube.com', 'm.youtube.com',
-        'facebook.com', 'www.facebook.com', 'm.facebook.com',
-        'twitter.com', 'www.twitter.com', 'x.com', 'www.x.com',
-        'instagram.com', 'www.instagram.com',
-        'linkedin.com', 'www.linkedin.com',
-        'reddit.com', 'www.reddit.com',
-        'tiktok.com', 'www.tiktok.com',
-        'netflix.com', 'www.netflix.com',
-        'spotify.com', 'www.spotify.com',
-        'amazon.com', 'www.amazon.com',
-        'ebay.com', 'www.ebay.com'
-    ];
-    
-    const hostname = window.location.hostname.toLowerCase();
-    if (excludedDomains.some(domain => hostname === domain || hostname.endsWith('.' + domain))) {
+    if (isExcludedDomain(window.location.hostname)) {
         return false;
     }
     
@@ -45,30 +31,54 @@ function isJobApplicationForm() {
     return inputCount >= 3;
 }
 
+let buttonCreationInProgress = false;
+
 export function createFillButton() {
     if (document.getElementById('job-app-autofill-btn'))
         return;
     
+    if (buttonCreationInProgress)
+        return;
+    
+    buttonCreationInProgress = true;
+    
     chrome.storage.sync.get(['showAutoFillButton'], (result) => {
         const showButton = result.showAutoFillButton !== false;
         if (!showButton) {
+            buttonCreationInProgress = false;
             return;
         }
         
         if (!isJobApplicationForm()) {
+            buttonCreationInProgress = false;
+            return;
+        }
+        
+        if (document.getElementById('job-app-autofill-btn')) {
+            buttonCreationInProgress = false;
             return;
         }
         
         createButtonElement();
+        buttonCreationInProgress = false;
     });
 }
 
 function createButtonElement() {
+    if (document.getElementById('job-app-autofill-btn')) {
+        return;
+    }
+    
     const button = document.createElement('button');
     button.id = 'job-app-autofill-btn';
     const text = document.createElement('span');
-    text.textContent = 'paste apply';
+    text.textContent = 'Paste Apply';
     text.className = 'autofill-btn-text';
+    text.style.cssText = `
+      text-transform: none;
+      font-size: 18px;
+      font-weight: 600;
+    `;
     const editIcon = document.createElement('span');
     editIcon.innerHTML = '✎';
     editIcon.style.cssText = `
@@ -118,16 +128,17 @@ function createButtonElement() {
       right: ${right};
       left: ${left};
       bottom: ${bottom};
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #3566E6;
       color: white;
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      border-radius: 12px;
+      border: none;
+      border-radius: 8px;
       padding: 12px 20px;
       cursor: move;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 600;
+      text-transform: none;
       z-index: 99999;
-      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
+      box-shadow: 0 4px 12px rgba(53, 102, 230, 0.25);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
@@ -137,6 +148,7 @@ function createButtonElement() {
       user-select: none;
       touch-action: none;
     `;
+        button.style.setProperty('background', '#3566E6', 'important');
         if (savedPosition && savedPosition.left && savedPosition.left !== 'auto') {
             setTimeout(() => {
                 const rect = button.getBoundingClientRect();
@@ -209,16 +221,16 @@ function createButtonElement() {
     document.addEventListener('touchend', endDrag);
     button.onmouseover = () => {
         if (!isDragging) {
-            button.style.background = 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)';
+            button.style.setProperty('background', '#3566E6', 'important');
             button.style.transform = 'translateY(-2px)';
-            button.style.boxShadow = '0 12px 32px rgba(102, 126, 234, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.2)';
+            button.style.boxShadow = '0 6px 20px rgba(53, 102, 230, 0.35)';
         }
     };
     button.onmouseout = () => {
         if (!isDragging) {
-            button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            button.style.setProperty('background', '#3566E6', 'important');
             button.style.transform = 'translateY(0)';
-            button.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15)';
+            button.style.boxShadow = '0 4px 12px rgba(53, 102, 230, 0.25)';
         }
     };
     button.onclick = (e) => {
@@ -233,35 +245,20 @@ function createButtonElement() {
         button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
         button.style.boxShadow = '0 8px 24px rgba(16, 185, 129, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15)';
         setTimeout(() => {
-            text.textContent = 'paste apply';
-            button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-            button.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15)';
+            text.textContent = 'Paste Apply';
+            button.style.setProperty('background', '#3566E6', 'important');
+            button.style.boxShadow = '0 4px 12px rgba(53, 102, 230, 0.25)';
         }, 2000);
     };
-    document.body.appendChild(button);
+    if (!document.getElementById('job-app-autofill-btn')) {
+        document.body.appendChild(button);
+    }
 }
 export function initButton() {
     if (window.self !== window.top)
         return;
     
-    const excludedDomains = [
-        'youtube.com', 'youtu.be', 'www.youtube.com', 'm.youtube.com',
-        'facebook.com', 'www.facebook.com', 'm.facebook.com',
-        'twitter.com', 'www.twitter.com', 'x.com', 'www.x.com',
-        'instagram.com', 'www.instagram.com',
-        'linkedin.com', 'www.linkedin.com',
-        'reddit.com', 'www.reddit.com',
-        'tiktok.com', 'www.tiktok.com',
-        'netflix.com', 'www.netflix.com',
-        'spotify.com', 'www.spotify.com',
-        'amazon.com', 'www.amazon.com',
-        'ebay.com', 'www.ebay.com'
-    ];
-    
-    const hostname = window.location.hostname.toLowerCase();
-    const isExcluded = excludedDomains.some(domain => hostname === domain || hostname.endsWith('.' + domain));
-    
-    if (isExcluded) {
+    if (isExcludedDomain(window.location.hostname)) {
         const existingButton = document.getElementById('job-app-autofill-btn');
         if (existingButton) {
             existingButton.remove();

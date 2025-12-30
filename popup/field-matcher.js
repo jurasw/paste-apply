@@ -6,10 +6,10 @@ export const fieldMappings = {
     github: ['github', 'github-url', 'github_url', 'github-link', 'github_link', 'github-profile'],
     linkedin: ['linkedin', 'linkedin-url', 'linkedin_url', 'linkedin-link', 'linkedin_link', 'linkedin-profile'],
     portfolio: ['portfolio', 'portfolio-url', 'portfolio_url', 'website', 'personal-website', 'personal_website', 'url', 'strona', 'strona internetowa', 'strona_internetowa'],
-    city: ['city', 'location city', 'location-city', 'location_city', 'town', 'municipality', 'miasto', 'miasto_field'],
-    country: ['country', 'location country', 'location-country', 'location_country', 'nation', 'kraj', 'kraj_field'],
+    location: ['location', 'city', 'address', 'residence', 'country', 'location country', 'location city', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'miasto', 'kraj'],
     resume: ['resume', 'cv', 'resume-url', 'resume_url', 'cv-url', 'cv_url', 'życiorys', 'zyciorys', 'curriculum vitae']
 };
+
 export function getLabelText(input) {
     const htmlInput = input;
     if (htmlInput.labels && htmlInput.labels.length > 0) {
@@ -47,6 +47,7 @@ export function getLabelText(input) {
     }
     return '';
 }
+
 export function isCustomDropdown(input) {
     const placeholder = (input.placeholder || '').toLowerCase();
     const className = (input.className || '').toLowerCase();
@@ -79,6 +80,7 @@ export function isCustomDropdown(input) {
     }
     return false;
 }
+
 export function findDropdownOption(input, searchValue) {
     const valueLower = searchValue.toLowerCase().trim();
     const valueParts = valueLower.split(/[,\s]+/);
@@ -105,6 +107,7 @@ export function findDropdownOption(input, searchValue) {
     }
     return null;
 }
+
 export async function fillCustomDropdown(input, value) {
     try {
         input.focus();
@@ -157,3 +160,4 @@ export async function fillCustomDropdown(input, value) {
         return false;
     }
 }
+

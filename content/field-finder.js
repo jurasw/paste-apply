@@ -1,13 +1,5 @@
-import { getLabelText, isCustomDropdown, fillCustomDropdown } from './content-field-matcher';
-function looksLikePhoneNumber(value) {
-    if (!value || typeof value !== 'string') return false;
-    const cleaned = value.replace(/[\s\-\(\)\+]/g, '');
-    return /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && cleaned.length >= 7 && /^\d+$/.test(cleaned);
-}
-function looksLikeEmail(value) {
-    if (!value || typeof value !== 'string') return false;
-    return value.includes('@') && value.includes('.');
-}
+import { getLabelText, isCustomDropdown, fillCustomDropdown } from './field-matcher';
+import { looksLikePhoneNumber, looksLikeEmail } from './utils';
 function fillInputField(htmlInput, value, fieldId) {
     try {
         htmlInput.focus();

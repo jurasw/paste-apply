@@ -1,6 +1,6 @@
 {
   "name": "paste-apply",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Job Application Auto-Fill Chrome Extension",
   "scripts": {
     "build": "npm run build:bundle",

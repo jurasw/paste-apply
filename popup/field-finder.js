@@ -1,62 +1,7 @@
-import { getLabelText, isCustomDropdown, fillCustomDropdown } from './content-field-matcher';
-function looksLikePhoneNumber(value) {
-    if (!value || typeof value !== 'string') return false;
-    const cleaned = value.replace(/[\s\-\(\)\+]/g, '');
-    return /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && cleaned.length >= 7 && /^\d+$/.test(cleaned);
-}
-function looksLikeEmail(value) {
-    if (!value || typeof value !== 'string') return false;
-    return value.includes('@') && value.includes('.');
-}
-function fillInputField(htmlInput, value, fieldId) {
-    try {
-        htmlInput.focus();
-        if (htmlInput.tagName === 'SELECT') {
-            const selectEl = htmlInput;
-            const option = Array.from(selectEl.options).find(opt => opt.value.toLowerCase().includes(value.toLowerCase()) ||
-                opt.text.toLowerCase().includes(value.toLowerCase()));
-            if (option) {
-                selectEl.value = option.value;
-            }
-            else {
-                selectEl.value = value;
-            }
-        }
-        else if (htmlInput.tagName === 'INPUT') {
-            const inputEl = htmlInput;
-            if (isCustomDropdown(inputEl)) {
-                fillCustomDropdown(inputEl, value).then(success => {
-                    if (success) {
-                        console.log(`[AutoFill] Filled custom dropdown: ${fieldId} with value: ${value.substring(0, 20)}`);
-                    }
-                });
-                return true;
-            }
-            else {
-                inputEl.value = value;
-            }
-        }
-        else {
-            htmlInput.value = value;
-        }
-        const events = ['input', 'change', 'blur', 'keyup', 'keydown'];
-        events.forEach(eventType => {
-            htmlInput.dispatchEvent(new Event(eventType, { bubbles: true, cancelable: true }));
-        });
-        if (htmlInput.tagName === 'INPUT' && htmlInput.type === 'email') {
-            htmlInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        htmlInput.dispatchEvent(new Event('focus', { bubbles: true }));
-        htmlInput.dispatchEvent(new Event('blur', { bubbles: true }));
-        htmlInput.blur();
-        console.log(`[AutoFill] Filled field: ${fieldId} with value: ${value.substring(0, 20)}`);
-        return true;
-    }
-    catch (e) {
-        console.error('[AutoFill] Error filling field:', e);
-        return false;
-    }
-}
+import { getLabelText } from './field-matcher';
+import { fillInputField } from './field-filler';
+import { looksLikePhoneNumber, looksLikeEmail } from './validation';
+
 export function findFieldByKeywords(keywords, value) {
     const allInputs = Array.from(document.querySelectorAll('input, textarea, select'));
     for (const input of allInputs) {
@@ -129,6 +74,7 @@ export function findFieldByKeywords(keywords, value) {
     }
     return false;
 }
+
 export function findFieldByLabelText(labelKeywords, value) {
     const labels = Array.from(document.querySelectorAll('label'));
     const allTextElements = Array.from(document.querySelectorAll('div, span, p, h1, h2, h3, h4, h5, h6'));
@@ -209,14 +155,14 @@ export function findFieldByLabelText(labelKeywords, value) {
                                        text.includes('telefon') || text.includes('numer telefonu') || 
                                        text.includes('telefon komórkowy') || text.includes('komórka') ||
                                        text.includes('mobile') || text.includes('cell') || text.includes('tel');
-                    if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                    if (isPhoneField && !looksLikePhoneNumber(value)) {
                         continue;
                     }
                     const isLocationField = text.includes('location') || text.includes('city') || 
                                           text.includes('address') || text.includes('residence') ||
                                           text.includes('lokalizacja') || text.includes('miejsce zamieszkania') ||
                                           text.includes('adres') || text.includes('miasto') || text.includes('kraj');
-                    if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                    if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
                         continue;
                     }
                     const currentValue = input.tagName === 'SELECT'
@@ -231,6 +177,7 @@ export function findFieldByLabelText(labelKeywords, value) {
     }
     return false;
 }
+
 export function findFieldByTextSearch(labelKeywords, value) {
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
     let node = walker.nextNode();
@@ -282,3 +229,4 @@ export function findFieldByTextSearch(labelKeywords, value) {
     }
     return false;
 }
+
