@@ -478,6 +478,18 @@ export function injectFillFunction(profileData, resumeData) {
         filledCount++;
         results.push('Resume File');
     }
+    const requiredCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"][required]'));
+    for (const checkbox of requiredCheckboxes) {
+        if (!checkbox.checked) {
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+            checkbox.dispatchEvent(new Event('click', { bubbles: true, cancelable: true }));
+            checkbox.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+            filledCount++;
+            results.push('Required Checkbox');
+            console.log(`[AutoFill] ✓ Checked required checkbox: ${checkbox.id || checkbox.name || 'unknown'}`);
+        }
+    }
     console.log(`[AutoFill] Completed: Filled ${filledCount} field${filledCount > 1 ? 's' : ''}: ${results.join(', ')}`);
     if (filledCount > 0) {
         showNotification(`✓ Filled ${filledCount} field${filledCount > 1 ? 's' : ''}: ${results.join(', ')}`, true);
