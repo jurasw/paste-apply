@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "paste apply - Job Application Auto-Fill",
+  "name": "Paste Apply - Job Application Auto-Fill",
   "version": "1.0.0",
   "description": "Automatically fill job application forms with your saved information",
   "permissions": [
@@ -41,6 +41,15 @@
       "resources": ["pdf.worker.min.js"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "commands": {
+    "fill-form": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+F",
+        "mac": "Command+Shift+F"
+      },
+      "description": "Fill job application form"
+    }
+  }
 }
 
