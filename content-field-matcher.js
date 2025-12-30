@@ -1,14 +1,14 @@
 export const fieldMappings = {
-    firstName: ['firstname', 'first-name', 'first_name', 'fname', 'given-name', 'given_name', 'name'],
-    lastName: ['lastname', 'last-name', 'last_name', 'lname', 'family-name', 'family_name', 'surname'],
-    email: ['email', 'e-mail', 'email-address', 'email_address', 'mail'],
-    phone: ['phone', 'phone-number', 'phone_number', 'telephone', 'tel', 'mobile', 'cell'],
+    firstName: ['firstname', 'first-name', 'first_name', 'fname', 'given-name', 'given_name', 'name', 'imię', 'imie', 'imie_field', 'imię_field'],
+    lastName: ['lastname', 'last-name', 'last_name', 'lname', 'family-name', 'family_name', 'surname', 'nazwisko', 'nazwisko_field'],
+    email: ['email', 'e-mail', 'email-address', 'email_address', 'mail', 'adres e-mail', 'adres_email', 'e-mail_field'],
+    phone: ['phone', 'phone-number', 'phone_number', 'telephone', 'tel', 'mobile', 'cell', 'telefon', 'numer telefonu', 'numer_telefonu', 'telefon komórkowy', 'telefon_komórkowy', 'komórka'],
     github: ['github', 'github-url', 'github_url', 'github-link', 'github_link', 'github-profile'],
     linkedin: ['linkedin', 'linkedin-url', 'linkedin_url', 'linkedin-link', 'linkedin_link', 'linkedin-profile'],
-    portfolio: ['portfolio', 'portfolio-url', 'portfolio_url', 'website', 'personal-website', 'personal_website', 'url'],
-    city: ['city', 'location city', 'location-city', 'location_city', 'town', 'municipality'],
-    country: ['country', 'location country', 'location-country', 'location_country', 'nation'],
-    resume: ['resume', 'cv', 'resume-url', 'resume_url', 'cv-url', 'cv_url']
+    portfolio: ['portfolio', 'portfolio-url', 'portfolio_url', 'website', 'personal-website', 'personal_website', 'url', 'strona', 'strona internetowa', 'strona_internetowa'],
+    city: ['city', 'location city', 'location-city', 'location_city', 'town', 'municipality', 'miasto', 'miasto_field'],
+    country: ['country', 'location country', 'location-country', 'location_country', 'nation', 'kraj', 'kraj_field'],
+    resume: ['resume', 'cv', 'resume-url', 'resume_url', 'cv-url', 'cv_url', 'życiorys', 'zyciorys', 'curriculum vitae']
 };
 export function getLabelText(input) {
     const htmlInput = input;

@@ -1,14 +1,14 @@
 export function injectFillFunction(profileData, resumeData) {
     const fieldMappings = {
-        firstName: ['firstname', 'first-name', 'first_name', 'fname', 'given-name', 'given_name', 'name'],
-        lastName: ['lastname', 'last-name', 'last_name', 'lname', 'family-name', 'family_name', 'surname'],
-        email: ['email', 'e-mail', 'email-address', 'email_address', 'mail'],
-        phone: ['phone', 'phone-number', 'phone_number', 'telephone', 'tel', 'mobile', 'cell'],
+        firstName: ['firstname', 'first-name', 'first_name', 'fname', 'given-name', 'given_name', 'name', 'imię', 'imie', 'imie_field', 'imię_field'],
+        lastName: ['lastname', 'last-name', 'last_name', 'lname', 'family-name', 'family_name', 'surname', 'nazwisko', 'nazwisko_field'],
+        email: ['email', 'e-mail', 'email-address', 'email_address', 'mail', 'adres e-mail', 'adres_email', 'e-mail_field'],
+        phone: ['phone', 'phone-number', 'phone_number', 'telephone', 'tel', 'mobile', 'cell', 'telefon', 'numer telefonu', 'numer_telefonu', 'telefon komórkowy', 'telefon_komórkowy', 'komórka'],
         github: ['github', 'github-url', 'github_url', 'github-link', 'github_link', 'github-profile'],
         linkedin: ['linkedin', 'linkedin-url', 'linkedin_url', 'linkedin-link', 'linkedin_link', 'linkedin-profile'],
-        portfolio: ['portfolio', 'portfolio-url', 'portfolio_url', 'website', 'personal-website', 'personal_website', 'url'],
-        location: ['location', 'city', 'address', 'residence', 'country', 'location country', 'location city'],
-        resume: ['resume', 'cv', 'resume-url', 'resume_url', 'cv-url', 'cv_url']
+        portfolio: ['portfolio', 'portfolio-url', 'portfolio_url', 'website', 'personal-website', 'personal_website', 'url', 'strona', 'strona internetowa', 'strona_internetowa'],
+        location: ['location', 'city', 'address', 'residence', 'country', 'location country', 'location city', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'miasto', 'kraj'],
+        resume: ['resume', 'cv', 'resume-url', 'resume_url', 'cv-url', 'cv_url', 'życiorys', 'zyciorys', 'curriculum vitae']
     };
     function getLabelText(input) {
         const htmlInput = input;
@@ -251,6 +251,26 @@ export function injectFillFunction(profileData, resumeData) {
             for (const keyword of keywords) {
                 const keywordLower = keyword.toLowerCase();
                 if (searchText.includes(keywordLower)) {
+                    const isEmailField = htmlInput.tagName === 'INPUT' && htmlInput.type === 'email' || 
+                                       searchText.includes('email') || searchText.includes('e-mail') || 
+                                       searchText.includes('adres e-mail') || searchText.includes('adres email');
+                    if (isEmailField && !value.includes('@')) {
+                        continue;
+                    }
+                    const isPhoneField = searchText.includes('phone') || searchText.includes('telephone') || 
+                                        searchText.includes('telefon') || searchText.includes('numer telefonu') || 
+                                        searchText.includes('telefon komórkowy') || searchText.includes('komórka') ||
+                                        searchText.includes('mobile') || searchText.includes('cell') || searchText.includes('tel');
+                    if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                        continue;
+                    }
+                    const isLocationField = searchText.includes('location') || searchText.includes('city') || 
+                                          searchText.includes('address') || searchText.includes('residence') ||
+                                          searchText.includes('lokalizacja') || searchText.includes('miejsce zamieszkania') ||
+                                          searchText.includes('adres') || searchText.includes('miasto') || searchText.includes('kraj');
+                    if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                        continue;
+                    }
                     const fieldId = id || name || ariaLabel || 'unknown';
                     return fillInputField(htmlInput, value, fieldId);
                 }
@@ -281,14 +301,34 @@ export function injectFillFunction(profileData, resumeData) {
                             input = nextSibling;
                         }
                     }
-                    if (input) {
-                        const currentValue = input.tagName === 'SELECT'
-                            ? input.value
-                            : input.value;
-                        if (!currentValue || currentValue.trim() === '') {
-                            return fillInputField(input, value, labelText.substring(0, 30));
-                        }
+                if (input) {
+                    const isEmailField = input.tagName === 'INPUT' && input.type === 'email' || 
+                                        labelText.includes('email') || labelText.includes('e-mail') || 
+                                        labelText.includes('adres e-mail') || labelText.includes('adres email');
+                    if (isEmailField && !value.includes('@')) {
+                        continue;
                     }
+                    const isPhoneField = labelText.includes('phone') || labelText.includes('telephone') || 
+                                       labelText.includes('telefon') || labelText.includes('numer telefonu') || 
+                                       labelText.includes('telefon komórkowy') || labelText.includes('komórka') ||
+                                       labelText.includes('mobile') || labelText.includes('cell') || labelText.includes('tel');
+                    if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                        continue;
+                    }
+                    const isLocationField = labelText.includes('location') || labelText.includes('city') || 
+                                          labelText.includes('address') || labelText.includes('residence') ||
+                                          labelText.includes('lokalizacja') || labelText.includes('miejsce zamieszkania') ||
+                                          labelText.includes('adres') || labelText.includes('miasto') || labelText.includes('kraj');
+                    if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                        continue;
+                    }
+                    const currentValue = input.tagName === 'SELECT'
+                        ? input.value
+                        : input.value;
+                    if (!currentValue || currentValue.trim() === '') {
+                        return fillInputField(input, value, labelText.substring(0, 30));
+                    }
+                }
                 }
             }
         }
@@ -298,7 +338,7 @@ export function injectFillFunction(profileData, resumeData) {
                 continue;
             for (const keyword of labelKeywords) {
                 const keywordLower = keyword.toLowerCase();
-                if (text.includes(keywordLower) && (text.includes('first name') || text.includes('last name') || text.includes('email') || text.includes('phone') || text.includes('github') || text.includes('linkedin') || text.includes('website') || text.includes('portfolio'))) {
+                if (text.includes(keywordLower) && (text.includes('first name') || text.includes('last name') || text.includes('email') || text.includes('phone') || text.includes('github') || text.includes('linkedin') || text.includes('website') || text.includes('portfolio') || text.includes('imię') || text.includes('imie') || text.includes('nazwisko') || text.includes('telefon') || text.includes('strona'))) {
                     let input = null;
                     input = textEl.parentElement?.querySelector('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="file"]), textarea, select');
                     if (!input) {
@@ -308,6 +348,26 @@ export function injectFillFunction(profileData, resumeData) {
                         }
                     }
                     if (input) {
+                        const isEmailField = input.tagName === 'INPUT' && input.type === 'email' || 
+                                            text.includes('email') || text.includes('e-mail') || 
+                                            text.includes('adres e-mail') || text.includes('adres email');
+                        if (isEmailField && !value.includes('@')) {
+                            continue;
+                        }
+                        const isPhoneField = text.includes('phone') || text.includes('telephone') || 
+                                           text.includes('telefon') || text.includes('numer telefonu') || 
+                                           text.includes('telefon komórkowy') || text.includes('komórka') ||
+                                           text.includes('mobile') || text.includes('cell') || text.includes('tel');
+                        if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                            continue;
+                        }
+                        const isLocationField = text.includes('location') || text.includes('city') || 
+                                              text.includes('address') || text.includes('residence') ||
+                                              text.includes('lokalizacja') || text.includes('miejsce zamieszkania') ||
+                                              text.includes('adres') || text.includes('miasto') || text.includes('kraj');
+                        if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                            continue;
+                        }
                         const currentValue = input.tagName === 'SELECT'
                             ? input.value
                             : input.value;
@@ -335,6 +395,26 @@ export function injectFillFunction(profileData, resumeData) {
                         const inputs = element.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="file"]), textarea, select');
                         for (const input of Array.from(inputs)) {
                             const htmlInput = input;
+                            const isEmailField = htmlInput.tagName === 'INPUT' && htmlInput.type === 'email' || 
+                                                textLower.includes('email') || textLower.includes('e-mail') || 
+                                                textLower.includes('adres e-mail') || textLower.includes('adres email');
+                            if (isEmailField && !value.includes('@')) {
+                                continue;
+                            }
+                            const isPhoneField = textLower.includes('phone') || textLower.includes('telephone') || 
+                                               textLower.includes('telefon') || textLower.includes('numer telefonu') || 
+                                               textLower.includes('telefon komórkowy') || textLower.includes('komórka') ||
+                                               textLower.includes('mobile') || textLower.includes('cell') || textLower.includes('tel');
+                            if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                                continue;
+                            }
+                            const isLocationField = textLower.includes('location') || textLower.includes('city') || 
+                                                  textLower.includes('address') || textLower.includes('residence') ||
+                                                  textLower.includes('lokalizacja') || textLower.includes('miejsce zamieszkania') ||
+                                                  textLower.includes('adres') || textLower.includes('miasto') || textLower.includes('kraj');
+                            if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                                continue;
+                            }
                             const currentValue = htmlInput.tagName === 'SELECT'
                                 ? htmlInput.value
                                 : htmlInput.value;
@@ -359,8 +439,8 @@ export function injectFillFunction(profileData, resumeData) {
             console.log('[AutoFill] No file inputs found on page');
             return false;
         }
-        const resumeKeywords = ['resume', 'cv', 'curriculum', 'vitae'];
-        const documentKeywords = ['document', 'attachment', 'file', 'upload', 'attach'];
+        const resumeKeywords = ['resume', 'cv', 'curriculum', 'vitae', 'życiorys', 'zyciorys'];
+        const documentKeywords = ['document', 'attachment', 'file', 'upload', 'attach', 'dokument', 'załącznik', 'plik', 'prześlij', 'załaduj', 'wgraj'];
         let bestMatch = null;
         let bestMatchScore = 0;
         let firstEmptyInput = null;
@@ -445,14 +525,14 @@ export function injectFillFunction(profileData, resumeData) {
     let filledCount = 0;
     const results = [];
     const fieldProcessors = [
-        { key: 'firstName', label: 'First Name', keywords: fieldMappings.firstName, labelKeywords: ['first name', 'firstname', 'first name field'] },
-        { key: 'lastName', label: 'Last Name', keywords: fieldMappings.lastName, labelKeywords: ['last name', 'lastname', 'surname', 'last name field'] },
-        { key: 'email', label: 'Email', keywords: fieldMappings.email, labelKeywords: ['email', 'e-mail', 'email address', 'email field'] },
-        { key: 'phone', label: 'Phone', keywords: fieldMappings.phone, labelKeywords: ['phone', 'telephone', 'mobile', 'phone number', 'phone field'] },
+        { key: 'firstName', label: 'First Name', keywords: fieldMappings.firstName, labelKeywords: ['first name', 'firstname', 'first name field', 'imię', 'imie'] },
+        { key: 'lastName', label: 'Last Name', keywords: fieldMappings.lastName, labelKeywords: ['last name', 'lastname', 'surname', 'last name field', 'nazwisko'] },
+        { key: 'email', label: 'Email', keywords: fieldMappings.email, labelKeywords: ['email', 'e-mail', 'email address', 'email field', 'adres e-mail', 'adres email'] },
+        { key: 'phone', label: 'Phone', keywords: fieldMappings.phone, labelKeywords: ['phone', 'telephone', 'mobile', 'phone number', 'phone field', 'telefon', 'numer telefonu', 'telefon komórkowy', 'komórka'] },
         { key: 'github', label: 'GitHub', keywords: fieldMappings.github, labelKeywords: ['github', 'github profile', 'github url', 'github link'] },
         { key: 'linkedin', label: 'LinkedIn', keywords: fieldMappings.linkedin, labelKeywords: ['linkedin', 'linked-in', 'linkedin profile', 'linkedin url', 'linkedin link'] },
-        { key: 'portfolio', label: 'Portfolio', keywords: fieldMappings.portfolio, labelKeywords: ['portfolio', 'website', 'portfolio url', 'portfolio link', 'personal website'] },
-        { key: 'location', label: 'Location', keywords: fieldMappings.location, labelKeywords: ['location', 'city', 'location field', 'city field'] }
+        { key: 'portfolio', label: 'Portfolio', keywords: fieldMappings.portfolio, labelKeywords: ['portfolio', 'website', 'portfolio url', 'portfolio link', 'personal website', 'strona', 'strona internetowa'] },
+        { key: 'location', label: 'Location', keywords: fieldMappings.location, labelKeywords: ['location', 'city', 'location field', 'city field', 'lokalizacja', 'miasto', 'miejsce zamieszkania', 'adres'] }
     ];
     for (const processor of fieldProcessors) {
         const value = profileData[processor.key];

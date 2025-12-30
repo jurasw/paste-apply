@@ -9,7 +9,13 @@ function isJobApplicationForm() {
         'github', 'linkedin', 'portfolio', 'website',
         'position', 'job', 'career', 'employment', 'hire',
         'cover-letter', 'coverletter', 'motivation',
-        'experience', 'education', 'qualification', 'skill'
+        'experience', 'education', 'qualification', 'skill',
+        'aplikacja', 'aplikuj', 'zaaplikuj', 'podanie', 'wniosek', 'życiorys',
+        'imię', 'imie', 'nazwisko',
+        'telefon', 'numer telefonu', 'telefon komórkowy', 'komórka',
+        'stanowisko', 'praca', 'oferta pracy', 'pozycja',
+        'doświadczenie', 'doświadczenie zawodowe', 'wykształcenie', 'edukacja',
+        'umiejętności', 'kompetencje', 'kwalifikacje'
     ];
     
     const pageText = (document.body?.textContent || '').toLowerCase();

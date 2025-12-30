@@ -93,6 +93,26 @@ export function findFieldByKeywords(keywords, value) {
         for (const keyword of keywords) {
             const keywordLower = keyword.toLowerCase();
             if (searchText.includes(keywordLower)) {
+                const isEmailField = htmlInput.tagName === 'INPUT' && htmlInput.type === 'email' || 
+                                   searchText.includes('email') || searchText.includes('e-mail') || 
+                                   searchText.includes('adres e-mail') || searchText.includes('adres email');
+                if (isEmailField && !value.includes('@')) {
+                    continue;
+                }
+                const isPhoneField = searchText.includes('phone') || searchText.includes('telephone') || 
+                                    searchText.includes('telefon') || searchText.includes('numer telefonu') || 
+                                    searchText.includes('telefon komórkowy') || searchText.includes('komórka') ||
+                                    searchText.includes('mobile') || searchText.includes('cell') || searchText.includes('tel');
+                if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                    continue;
+                }
+                const isLocationField = searchText.includes('location') || searchText.includes('city') || 
+                                      searchText.includes('address') || searchText.includes('residence') ||
+                                      searchText.includes('lokalizacja') || searchText.includes('miejsce zamieszkania') ||
+                                      searchText.includes('adres') || searchText.includes('miasto') || searchText.includes('kraj');
+                if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                    continue;
+                }
                 const fieldId = id || name || ariaLabel || 'unknown';
                 return fillInputField(htmlInput, value, fieldId);
             }
@@ -124,6 +144,26 @@ export function findFieldByLabelText(labelKeywords, value) {
                     }
                 }
                 if (input) {
+                    const isEmailField = input.tagName === 'INPUT' && input.type === 'email' || 
+                                        labelText.includes('email') || labelText.includes('e-mail') || 
+                                        labelText.includes('adres e-mail') || labelText.includes('adres email');
+                    if (isEmailField && !value.includes('@')) {
+                        continue;
+                    }
+                    const isPhoneField = labelText.includes('phone') || labelText.includes('telephone') || 
+                                       labelText.includes('telefon') || labelText.includes('numer telefonu') || 
+                                       labelText.includes('telefon komórkowy') || labelText.includes('komórka') ||
+                                       labelText.includes('mobile') || labelText.includes('cell') || labelText.includes('tel');
+                    if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                        continue;
+                    }
+                    const isLocationField = labelText.includes('location') || labelText.includes('city') || 
+                                          labelText.includes('address') || labelText.includes('residence') ||
+                                          labelText.includes('lokalizacja') || labelText.includes('miejsce zamieszkania') ||
+                                          labelText.includes('adres') || labelText.includes('miasto') || labelText.includes('kraj');
+                    if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                        continue;
+                    }
                     const currentValue = input.tagName === 'SELECT'
                         ? input.value
                         : input.value;
@@ -140,7 +180,7 @@ export function findFieldByLabelText(labelKeywords, value) {
             continue;
         for (const keyword of labelKeywords) {
             const keywordLower = keyword.toLowerCase();
-            if (text.includes(keywordLower) && (text.includes('first name') || text.includes('last name') || text.includes('email') || text.includes('phone') || text.includes('github') || text.includes('linkedin') || text.includes('website') || text.includes('portfolio'))) {
+            if (text.includes(keywordLower) && (text.includes('first name') || text.includes('last name') || text.includes('email') || text.includes('phone') || text.includes('github') || text.includes('linkedin') || text.includes('website') || text.includes('portfolio') || text.includes('imię') || text.includes('imie') || text.includes('nazwisko') || text.includes('telefon') || text.includes('strona'))) {
                 let input = null;
                 input = textEl.parentElement?.querySelector('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="file"]), textarea, select');
                 if (!input) {
@@ -150,6 +190,26 @@ export function findFieldByLabelText(labelKeywords, value) {
                     }
                 }
                 if (input) {
+                    const isEmailField = input.tagName === 'INPUT' && input.type === 'email' || 
+                                        text.includes('email') || text.includes('e-mail') || 
+                                        text.includes('adres e-mail') || text.includes('adres email');
+                    if (isEmailField && !value.includes('@')) {
+                        continue;
+                    }
+                    const isPhoneField = text.includes('phone') || text.includes('telephone') || 
+                                       text.includes('telefon') || text.includes('numer telefonu') || 
+                                       text.includes('telefon komórkowy') || text.includes('komórka') ||
+                                       text.includes('mobile') || text.includes('cell') || text.includes('tel');
+                    if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                        continue;
+                    }
+                    const isLocationField = text.includes('location') || text.includes('city') || 
+                                          text.includes('address') || text.includes('residence') ||
+                                          text.includes('lokalizacja') || text.includes('miejsce zamieszkania') ||
+                                          text.includes('adres') || text.includes('miasto') || text.includes('kraj');
+                    if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                        continue;
+                    }
                     const currentValue = input.tagName === 'SELECT'
                         ? input.value
                         : input.value;
@@ -177,6 +237,26 @@ export function findFieldByTextSearch(labelKeywords, value) {
                     const inputs = element.querySelectorAll('input:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="file"]), textarea, select');
                     for (const input of Array.from(inputs)) {
                         const htmlInput = input;
+                        const isEmailField = htmlInput.tagName === 'INPUT' && htmlInput.type === 'email' || 
+                                            textLower.includes('email') || textLower.includes('e-mail') || 
+                                            textLower.includes('adres e-mail') || textLower.includes('adres email');
+                        if (isEmailField && !value.includes('@')) {
+                            continue;
+                        }
+                        const isPhoneField = textLower.includes('phone') || textLower.includes('telephone') || 
+                                           textLower.includes('telefon') || textLower.includes('numer telefonu') || 
+                                           textLower.includes('telefon komórkowy') || textLower.includes('komórka') ||
+                                           textLower.includes('mobile') || textLower.includes('cell') || textLower.includes('tel');
+                        if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                            continue;
+                        }
+                        const isLocationField = textLower.includes('location') || textLower.includes('city') || 
+                                              textLower.includes('address') || textLower.includes('residence') ||
+                                              textLower.includes('lokalizacja') || textLower.includes('miejsce zamieszkania') ||
+                                              textLower.includes('adres') || textLower.includes('miasto') || textLower.includes('kraj');
+                        if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                            continue;
+                        }
                         const currentValue = htmlInput.tagName === 'SELECT'
                             ? htmlInput.value
                             : htmlInput.value;
