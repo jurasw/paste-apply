@@ -167,23 +167,6 @@ h1 {
     font-weight: 500;
   }
 
-  .tips {
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-    color: #c7d2fe;
-    border: 1px solid rgba(53, 102, 230, 0.3);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(53, 102, 230, 0.15);
-  }
-
-  .tips kbd {
-    background: linear-gradient(135deg, #312e81 0%, #1e1b4b 100%);
-    border-color: rgba(53, 102, 230, 0.4);
-    color: #3566E6;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    font-weight: 600;
-  }
-
   p {
     color: #b0b0b0;
   }
@@ -377,44 +360,5 @@ input[type="file"]:focus {
   border: 1px solid #fca5a5;
   border-radius: 8px;
   font-weight: 500;
-}
-
-.tips {
-  margin-top: 20px;
-  padding: 18px;
-  background: linear-gradient(135deg, #f0f4ff 0%, #e8edff 100%);
-  font-size: 12px;
-  color: #1e293b;
-  border-radius: 12px;
-  border: 1px solid rgba(53, 102, 230, 0.15);
-  box-shadow: 0 2px 8px rgba(53, 102, 230, 0.08);
-}
-
-.tips p {
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #334155;
-}
-
-.tips ul {
-  margin-left: 20px;
-  margin-top: 8px;
-}
-
-.tips li {
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-
-.tips kbd {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 1px solid rgba(53, 102, 230, 0.2);
-  padding: 4px 8px;
-  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
-  font-size: 11px;
-  box-shadow: 0 2px 4px rgba(53, 102, 230, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  border-radius: 6px;
-  color: #3566E6;
-  font-weight: 600;
 }
 
