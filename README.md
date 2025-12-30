@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="icons/logo.png" alt="Paste Apply Logo" width="128" height="128">
+  <img src="src/icons/logo.png" alt="Paste Apply Logo" width="128" height="128">
 </div>
 
 # 🚀 Paste Apply
@@ -24,7 +24,7 @@ Paste Apply is a powerful Chrome extension that streamlines your job application
 ## 📸 Screenshots
 
 ### Main Interface
-![Paste Apply Main Interface](ss.png)
+![Paste Apply Main Interface](screenshots/ss.png)
 
 The extension popup provides an intuitive interface where you can:
 - Upload and parse your resume to auto-fill profile information
@@ -33,7 +33,7 @@ The extension popup provides an intuitive interface where you can:
 - Configure settings to show auto-fill buttons on job pages
 
 ### Form Filling in Action
-![Form Filling Demo](ss2.png)
+![Form Filling Demo](screenshots/ss2.png)
 
 See Paste Apply in action as it intelligently matches and fills form fields on job application pages, making the application process faster and more efficient.
 
