@@ -1,22 +1,24 @@
 import { fillForm } from './content-form-filler';
 
 function isJobApplicationForm() {
-    const jobKeywords = [
-        'application', 'apply', 'resume', 'cv', 'curriculum', 'vitae',
-        'firstname', 'first-name', 'first_name', 'fname', 'given-name',
-        'lastname', 'last-name', 'last_name', 'lname', 'surname',
-        'email', 'e-mail', 'phone', 'telephone', 'mobile',
-        'github', 'linkedin', 'portfolio', 'website',
-        'position', 'job', 'career', 'employment', 'hire',
-        'cover-letter', 'coverletter', 'motivation',
-        'experience', 'education', 'qualification', 'skill',
-        'aplikacja', 'aplikuj', 'zaaplikuj', 'podanie', 'wniosek', 'życiorys',
-        'imię', 'imie', 'nazwisko',
-        'telefon', 'numer telefonu', 'telefon komórkowy', 'komórka',
-        'stanowisko', 'praca', 'oferta pracy', 'pozycja',
-        'doświadczenie', 'doświadczenie zawodowe', 'wykształcenie', 'edukacja',
-        'umiejętności', 'kompetencje', 'kwalifikacje'
+    const excludedDomains = [
+        'youtube.com', 'youtu.be', 'www.youtube.com', 'm.youtube.com',
+        'facebook.com', 'www.facebook.com', 'm.facebook.com',
+        'twitter.com', 'www.twitter.com', 'x.com', 'www.x.com',
+        'instagram.com', 'www.instagram.com',
+        'linkedin.com', 'www.linkedin.com',
+        'reddit.com', 'www.reddit.com',
+        'tiktok.com', 'www.tiktok.com',
+        'netflix.com', 'www.netflix.com',
+        'spotify.com', 'www.spotify.com',
+        'amazon.com', 'www.amazon.com',
+        'ebay.com', 'www.ebay.com'
     ];
+    
+    const hostname = window.location.hostname.toLowerCase();
+    if (excludedDomains.some(domain => hostname === domain || hostname.endsWith('.' + domain))) {
+        return false;
+    }
     
     const pageText = (document.body?.textContent || '').toLowerCase();
     const pageTitle = (document.title || '').toLowerCase();
@@ -24,40 +26,23 @@ function isJobApplicationForm() {
     
     const allText = `${pageText} ${pageTitle} ${pageUrl}`;
     
-    const hasJobKeyword = jobKeywords.some(keyword => 
-        allText.includes(keyword)
-    );
+    const hasResumeOrCv = allText.includes('resume') || allText.includes('cv');
     
-    if (hasJobKeyword) {
-        return true;
+    if (!hasResumeOrCv) {
+        return false;
     }
     
     const formInputs = Array.from(document.querySelectorAll('input, textarea, select'));
-    let relevantFieldCount = 0;
+    let inputCount = 0;
     
     for (const input of formInputs) {
         if (input.type === 'hidden' || input.type === 'submit' || input.type === 'button' || input.type === 'file') {
             continue;
         }
-        
-        const id = (input.id || '').toLowerCase();
-        const name = (input.name || '').toLowerCase();
-        const placeholder = (input.placeholder || '').toLowerCase();
-        const label = input.labels?.[0]?.textContent?.toLowerCase() || '';
-        const ariaLabel = (input.getAttribute('aria-label') || '').toLowerCase();
-        
-        const fieldText = `${id} ${name} ${placeholder} ${label} ${ariaLabel}`;
-        
-        const hasRelevantField = jobKeywords.some(keyword => 
-            fieldText.includes(keyword)
-        );
-        
-        if (hasRelevantField) {
-            relevantFieldCount++;
-        }
+        inputCount++;
     }
     
-    return relevantFieldCount >= 2;
+    return inputCount >= 3;
 }
 
 export function createFillButton() {
@@ -82,7 +67,7 @@ function createButtonElement() {
     const button = document.createElement('button');
     button.id = 'job-app-autofill-btn';
     const text = document.createElement('span');
-    text.textContent = 'Auto-Fill Form';
+    text.textContent = 'paste apply';
     text.className = 'autofill-btn-text';
     const editIcon = document.createElement('span');
     editIcon.innerHTML = '✎';
@@ -133,16 +118,16 @@ function createButtonElement() {
       right: ${right};
       left: ${left};
       bottom: ${bottom};
-      background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 8px;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
       padding: 12px 20px;
       cursor: move;
       font-size: 14px;
       font-weight: 600;
       z-index: 99999;
-      box-shadow: 0 4px 14px rgba(33, 150, 243, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
@@ -224,16 +209,16 @@ function createButtonElement() {
     document.addEventListener('touchend', endDrag);
     button.onmouseover = () => {
         if (!isDragging) {
-            button.style.background = 'linear-gradient(135deg, #1976D2 0%, #1565C0 100%)';
+            button.style.background = 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)';
             button.style.transform = 'translateY(-2px)';
-            button.style.boxShadow = '0 6px 20px rgba(33, 150, 243, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1)';
+            button.style.boxShadow = '0 12px 32px rgba(102, 126, 234, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.2)';
         }
     };
     button.onmouseout = () => {
         if (!isDragging) {
-            button.style.background = 'linear-gradient(135deg, #2196F3 0%, #1976D2 100%)';
+            button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
             button.style.transform = 'translateY(0)';
-            button.style.boxShadow = '0 4px 14px rgba(33, 150, 243, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)';
+            button.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15)';
         }
     };
     button.onclick = (e) => {
@@ -245,12 +230,12 @@ function createButtonElement() {
         }
         fillForm();
         text.textContent = '✓ Filled!';
-        button.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
-        button.style.boxShadow = '0 4px 14px rgba(76, 175, 80, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)';
+        button.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        button.style.boxShadow = '0 8px 24px rgba(16, 185, 129, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.15)';
         setTimeout(() => {
-            text.textContent = 'Auto-Fill Form';
-            button.style.background = 'linear-gradient(135deg, #2196F3 0%, #1976D2 100%)';
-            button.style.boxShadow = '0 4px 14px rgba(33, 150, 243, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)';
+            text.textContent = 'paste apply';
+            button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            button.style.boxShadow = '0 8px 24px rgba(102, 126, 234, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15)';
         }, 2000);
     };
     document.body.appendChild(button);
@@ -258,6 +243,32 @@ function createButtonElement() {
 export function initButton() {
     if (window.self !== window.top)
         return;
+    
+    const excludedDomains = [
+        'youtube.com', 'youtu.be', 'www.youtube.com', 'm.youtube.com',
+        'facebook.com', 'www.facebook.com', 'm.facebook.com',
+        'twitter.com', 'www.twitter.com', 'x.com', 'www.x.com',
+        'instagram.com', 'www.instagram.com',
+        'linkedin.com', 'www.linkedin.com',
+        'reddit.com', 'www.reddit.com',
+        'tiktok.com', 'www.tiktok.com',
+        'netflix.com', 'www.netflix.com',
+        'spotify.com', 'www.spotify.com',
+        'amazon.com', 'www.amazon.com',
+        'ebay.com', 'www.ebay.com'
+    ];
+    
+    const hostname = window.location.hostname.toLowerCase();
+    const isExcluded = excludedDomains.some(domain => hostname === domain || hostname.endsWith('.' + domain));
+    
+    if (isExcluded) {
+        const existingButton = document.getElementById('job-app-autofill-btn');
+        if (existingButton) {
+            existingButton.remove();
+        }
+        return;
+    }
+    
     if (document.getElementById('job-app-autofill-btn'))
         return;
     if (document.body) {
