@@ -4,30 +4,6 @@ export function createFillButton() {
         return;
     const button = document.createElement('button');
     button.id = 'job-app-autofill-btn';
-    const icon = document.createElement('span');
-    icon.style.cssText = `
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
-    border-radius: 50%;
-    margin-right: 10px;
-    position: relative;
-    vertical-align: middle;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-  `;
-    const iconHighlight = document.createElement('span');
-    iconHighlight.style.cssText = `
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 6px;
-    height: 6px;
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 50%;
-    pointer-events: none;
-  `;
-    icon.appendChild(iconHighlight);
     const text = document.createElement('span');
     text.textContent = 'Auto-Fill Form';
     text.className = 'autofill-btn-text';
@@ -61,7 +37,6 @@ export function createFillButton() {
         e.preventDefault();
         chrome.runtime.sendMessage({ action: 'openPopup' });
     };
-    button.appendChild(icon);
     button.appendChild(text);
     button.appendChild(editIcon);
     let isDragging = false;
@@ -84,8 +59,8 @@ export function createFillButton() {
       background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
       color: white;
       border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
       padding: 12px 20px;
-      border-radius: 10px;
       cursor: move;
       font-size: 14px;
       font-weight: 600;
@@ -192,12 +167,10 @@ export function createFillButton() {
             return;
         }
         fillForm();
-        icon.style.display = 'none';
         text.textContent = '✓ Filled!';
         button.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
         button.style.boxShadow = '0 4px 14px rgba(76, 175, 80, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)';
         setTimeout(() => {
-            icon.style.display = 'inline-block';
             text.textContent = 'Auto-Fill Form';
             button.style.background = 'linear-gradient(135deg, #2196F3 0%, #1976D2 100%)';
             button.style.boxShadow = '0 4px 14px rgba(33, 150, 243, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)';

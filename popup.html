@@ -18,7 +18,8 @@
           <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" style="padding: 5px; width: 100%; box-sizing: border-box;">
         </div>
         <div id="resumeInfo" class="resume-info"></div>
-        <button type="button" id="parseResumeBtn" class="btn btn-small" style="margin-top: 5px; padding: 6px 12px; font-size: 12px; display: none;">Extract Info from Resume</button>
+        <button type="button" id="parseResumeBtn" class="btn btn-primary" style="margin-top: 10px; width: 100%; display: none;">Auto-Fill Profile from Resume</button>
+        <p id="parseResumeHint" class="resume-hint" style="display: none; margin-top: 8px;">Click to extract your information and fill the profile fields below</p>
       </div>
       
       <div class="form-group">
@@ -57,8 +58,13 @@
       </div>
       
       <div class="form-group">
-        <label for="location">Location</label>
-        <input type="text" id="location" name="location" placeholder="City, Country">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" placeholder="Enter your city">
+      </div>
+      
+      <div class="form-group">
+        <label for="country">Country</label>
+        <input type="text" id="country" name="country" placeholder="Enter your country">
       </div>
       
       <div class="button-group">

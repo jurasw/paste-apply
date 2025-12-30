@@ -6,7 +6,6 @@
 
 html {
   background: transparent;
-  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -28,8 +27,8 @@ body {
   margin: 0;
   padding: 0;
   border: 2px solid #3566E6;
-  border-radius: 12px;
   overflow: hidden;
+  position: relative;
 }
 
 .container {
@@ -38,6 +37,24 @@ body {
   box-sizing: border-box;
   overflow-y: auto;
   max-height: 600px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #3566E6;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: #2a52b8;
 }
 
 h1 {
@@ -55,6 +72,14 @@ h1 {
 
   .container {
     background: transparent;
+  }
+
+  .container::-webkit-scrollbar-thumb {
+    background: #5a7feb;
+  }
+
+  .container::-webkit-scrollbar-thumb:hover {
+    background: #4a6fd9;
   }
 
   h1 {
@@ -89,7 +114,7 @@ h1 {
   }
 
   input[type="file"] {
-    background: #2d2d2d;
+    background: #2d2d2d !important;
     border-color: #444;
     color: #e0e0e0;
   }
@@ -98,7 +123,6 @@ h1 {
     background: #3566E6;
     color: white;
     border: none;
-    border-radius: 4px;
     padding: 6px 12px;
     margin-right: 12px;
     cursor: pointer;
@@ -114,12 +138,27 @@ h1 {
     border-color: #5a7feb;
   }
 
+  input[type="file"]::-webkit-file-upload-button {
+    background: #3566E6;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin-right: 12px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
   .subtitle {
     color: #b0b0b0;
   }
 
   .resume-info {
     color: #888;
+  }
+
+  .resume-hint {
+    color: #e8e8e8;
+    font-weight: 600;
   }
 
   .status.success {
@@ -172,6 +211,15 @@ h1 {
   margin-top: 5px;
 }
 
+.resume-hint {
+  font-size: 13px;
+  color: #444;
+  font-weight: 600;
+  margin-top: 8px;
+  line-height: 1.5;
+  display: block;
+}
+
 label {
   display: block;
   margin-bottom: 5px;
@@ -187,7 +235,6 @@ input[type="url"] {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #ddd;
-  border-radius: 4px;
   font-size: 14px;
   transition: border-color 0.2s;
 }
@@ -204,7 +251,6 @@ input[type="file"] {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #ddd;
-  border-radius: 4px;
   font-size: 14px;
   background: white;
   color: #333;
@@ -218,7 +264,6 @@ input[type="file"]::file-selector-button {
   background: #3566E6;
   color: white;
   border: none;
-  border-radius: 4px;
   padding: 6px 12px;
   margin-right: 12px;
   cursor: pointer;
@@ -241,7 +286,6 @@ input[type="file"]:focus {
   background-color: #3566E6;
   color: white;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -265,7 +309,6 @@ input[type="file"]:focus {
   flex: 1;
   padding: 10px 16px;
   border: none;
-  border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -293,7 +336,6 @@ input[type="file"]:focus {
 .status {
   margin-top: 15px;
   padding: 10px;
-  border-radius: 4px;
   font-size: 13px;
   text-align: center;
   display: none;
@@ -317,7 +359,6 @@ input[type="file"]:focus {
   margin-top: 20px;
   padding: 15px;
   background-color: #e3f2fd;
-  border-radius: 4px;
   font-size: 12px;
   color: #555;
 }
@@ -340,7 +381,6 @@ input[type="file"]:focus {
 .tips kbd {
   background-color: #fff;
   border: 1px solid #ccc;
-  border-radius: 3px;
   padding: 2px 6px;
   font-family: monospace;
   font-size: 11px;

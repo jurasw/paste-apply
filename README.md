@@ -11,29 +11,9 @@ A Chrome extension that automatically fills job application forms with your save
 
 ## Development Setup
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-2. Build the extension:
+1. Build the extension:
    ```bash
    npm run build
-   ```
-
-3. For development with auto-rebuild:
-   ```bash
-   npm run watch
-   ```
-
-4. Lint the code:
-   ```bash
-   npm run lint
-   ```
-
-5. Auto-fix linting issues:
-   ```bash
-   npm run lint:fix
    ```
 
 ## Installation

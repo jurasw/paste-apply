@@ -6,7 +6,8 @@ export const fieldMappings = {
     github: ['github', 'github-url', 'github_url', 'github-link', 'github_link', 'github-profile'],
     linkedin: ['linkedin', 'linkedin-url', 'linkedin_url', 'linkedin-link', 'linkedin_link', 'linkedin-profile'],
     portfolio: ['portfolio', 'portfolio-url', 'portfolio_url', 'website', 'personal-website', 'personal_website', 'url'],
-    location: ['location', 'city', 'address', 'residence', 'country', 'location country', 'location city'],
+    city: ['city', 'location city', 'location-city', 'location_city', 'town', 'municipality'],
+    country: ['country', 'location country', 'location-country', 'location_country', 'nation'],
     resume: ['resume', 'cv', 'resume-url', 'resume_url', 'cv-url', 'cv_url']
 };
 export function getLabelText(input) {
