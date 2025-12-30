@@ -33,6 +33,7 @@ type ChromeRuntime = {
     addListener(callback: (request: any, sender: ChromeMessageSender, sendResponse: (response: any) => void) => void | boolean): void;
   };
   getURL(path: string): string;
+  sendMessage(message: any, responseCallback?: (response: any) => void): void;
 };
 
 declare namespace chrome {
@@ -55,6 +56,10 @@ type ChromeScripting = {
   executeScript(details: { target: { tabId: number; allFrames?: boolean }; func: Function; args?: any[] }): Promise<any>;
 };
 
+type ChromeWindows = {
+  create(createData: { url: string; type: string; width?: number; height?: number }): void;
+};
+
 type ChromeAPI = {
   storage: {
     sync: ChromeStorageArea;
@@ -63,6 +68,7 @@ type ChromeAPI = {
   runtime: ChromeRuntime;
   tabs: ChromeTabs;
   scripting: ChromeScripting;
+  windows: ChromeWindows;
 };
 
 declare const chrome: ChromeAPI;
