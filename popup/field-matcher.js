@@ -83,7 +83,9 @@ export function isCustomDropdown(input) {
 
 export function findDropdownOption(input, searchValue) {
     const valueLower = searchValue.toLowerCase().trim();
-    const valueParts = valueLower.split(/[,\s]+/);
+    const valueParts = valueLower.split(/[,\s]+/).filter(part => part.length > 2);
+    const valuePartsSet = new Set(valueParts);
+    const searchTerms = new Set([valueLower, ...valueParts]);
     let container = input.parentElement;
     for (let i = 0; i < 5 && container; i++) {
         const dropdowns = container.querySelectorAll('[role="listbox"], [role="menu"], .dropdown-menu, .select-menu, .autocomplete-list, [class*="dropdown"], [class*="select"], [class*="option"], ul[class*="list"], div[class*="list"]');
@@ -93,11 +95,9 @@ export function findDropdownOption(input, searchValue) {
                 const optionText = (option.textContent || '').toLowerCase().trim();
                 const optionValue = option.getAttribute('value') || option.getAttribute('data-value') || '';
                 const optionValueLower = optionValue.toLowerCase();
-                if (optionText.includes(valueLower) || optionValueLower.includes(valueLower)) {
-                    return option;
-                }
-                for (const part of valueParts) {
-                    if (part.length > 2 && (optionText.includes(part) || optionValueLower.includes(part))) {
+                const optionTextLower = optionText.toLowerCase();
+                for (const term of searchTerms) {
+                    if (optionTextLower.includes(term) || optionValueLower.includes(term)) {
                         return option;
                     }
                 }

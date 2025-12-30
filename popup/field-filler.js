@@ -5,8 +5,15 @@ export function fillInputField(htmlInput, value, fieldId) {
         htmlInput.focus();
         if (htmlInput.tagName === 'SELECT') {
             const selectEl = htmlInput;
-            const option = Array.from(selectEl.options).find(opt => opt.value.toLowerCase().includes(value.toLowerCase()) ||
-                opt.text.toLowerCase().includes(value.toLowerCase()));
+            const valueLower = value.toLowerCase();
+            let option = null;
+            for (let i = 0; i < selectEl.options.length; i++) {
+                const opt = selectEl.options[i];
+                if (opt.value.toLowerCase().includes(valueLower) || opt.text.toLowerCase().includes(valueLower)) {
+                    option = opt;
+                    break;
+                }
+            }
             if (option) {
                 selectEl.value = option.value;
             }
