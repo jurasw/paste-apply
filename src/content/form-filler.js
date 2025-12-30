@@ -1,5 +1,5 @@
 import { fieldMappings, getLabelText } from './field-matcher';
-import { findFieldByKeywords, findFieldByLabelText, findFieldByTextSearch } from './field-finder';
+import { findFieldByKeywords, findFieldByLabelText, findFieldByTextSearch, fillRadioButtonGroup } from './field-finder';
 import { showNotification } from './utils';
 export { findFieldByKeywords, findFieldByLabelText, findFieldByTextSearch };
 export function uploadResumeFile(base64Data, fileName, fileType) {
@@ -87,7 +87,7 @@ export function fillForm() {
     console.log('[AutoFill] Found inputs:', document.querySelectorAll('input, textarea, select').length);
     chrome.storage.sync.get([
         'firstName', 'lastName', 'email', 'phone',
-        'github', 'linkedin', 'portfolio', 'city', 'country', 'resume'
+        'github', 'linkedin', 'portfolio', 'city', 'country', 'availability', 'resume'
     ], (data) => {
         const profileData = data;
         console.log('[AutoFill] Profile data:', Object.keys(profileData).filter(k => profileData[k]));
@@ -101,14 +101,16 @@ export function fillForm() {
             { key: 'github', label: 'GitHub', keywords: fieldMappings.github, labelKeywords: ['github', 'github profile', 'github url', 'github link'] },
             { key: 'linkedin', label: 'LinkedIn', keywords: fieldMappings.linkedin, labelKeywords: ['linkedin', 'linked-in', 'linkedin profile', 'linkedin url', 'linkedin link'] },
             { key: 'portfolio', label: 'Portfolio', keywords: fieldMappings.portfolio, labelKeywords: ['portfolio', 'website', 'portfolio url', 'portfolio link', 'personal website'] },
-            { key: 'city', label: 'City', keywords: fieldMappings.city, labelKeywords: ['city', 'location city', 'city field', 'town'] },
-            { key: 'country', label: 'Country', keywords: fieldMappings.country, labelKeywords: ['country', 'location country', 'country field', 'nation'] }
+            { key: 'city', label: 'City', keywords: fieldMappings.city, labelKeywords: ['city', 'location', 'location city', 'city field', 'town'] },
+            { key: 'country', label: 'Country', keywords: fieldMappings.country, labelKeywords: ['country', 'location country', 'country field', 'nation'] },
+            { key: 'availability', label: 'Availability', keywords: fieldMappings.availability, labelKeywords: ['availability', 'notice period', 'notice-period', 'notice_period', 'notice', 'available', 'start date', 'start-date', 'start_date', 'when can you start', 'when can you join'] }
         ];
         for (const processor of fieldProcessors) {
             const value = profileData[processor.key];
             if (value) {
                 console.log(`[AutoFill] Trying to fill ${processor.label}...`);
-                const filled = findFieldByKeywords(processor.keywords, value) ||
+                let filled = fillRadioButtonGroup(processor.keywords, value) ||
+                    findFieldByKeywords(processor.keywords, value) ||
                     findFieldByLabelText(processor.labelKeywords, value) ||
                     findFieldByTextSearch(processor.labelKeywords, value);
                 if (filled) {

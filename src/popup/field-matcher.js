@@ -6,7 +6,9 @@ export const fieldMappings = {
     github: ['github', 'github-url', 'github_url', 'github-link', 'github_link', 'github-profile'],
     linkedin: ['linkedin', 'linkedin-url', 'linkedin_url', 'linkedin-link', 'linkedin_link', 'linkedin-profile'],
     portfolio: ['portfolio', 'portfolio-url', 'portfolio_url', 'website', 'personal-website', 'personal_website', 'url', 'strona', 'strona internetowa', 'strona_internetowa'],
-    location: ['location', 'city', 'address', 'residence', 'country', 'location country', 'location city', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'miasto', 'kraj'],
+    location: ['location', 'address', 'residence', 'country', 'location country', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'kraj'],
+    city: ['city', 'location city', 'miasto'],
+    availability: ['availability', 'notice period', 'notice-period', 'notice_period', 'notice', 'available', 'start date', 'start-date', 'start_date', 'when can you start', 'when can you join'],
     resume: ['resume', 'cv', 'resume-url', 'resume_url', 'cv-url', 'cv_url', 'życiorys', 'zyciorys', 'curriculum vitae']
 };
 

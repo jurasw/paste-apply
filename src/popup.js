@@ -1,7 +1,7 @@
 (function() {
 const profileFields = [
     'firstName', 'lastName', 'email', 'phone',
-    'github', 'linkedin', 'portfolio', 'location', 'city', 'country'
+    'github', 'linkedin', 'portfolio', 'location', 'city', 'country', 'availability'
 ];
 const resizeDimensions = { width: '400px', height: '600px' };
 const maxFileSizeMb = 7;
@@ -937,7 +937,8 @@ function initialize() {
                 linkedin: normalizeUrl(getElementById('linkedin').value),
                 portfolio: normalizeUrl(getElementById('portfolio').value),
                 city: getElementById('city').value,
-                country: getElementById('country').value
+                country: getElementById('country').value,
+                availability: getElementById('availability').value
             };
             try {
                 await chrome.storage.sync.set(data);

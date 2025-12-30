@@ -52,7 +52,13 @@ export function parseResumeText(text) {
     for (const pattern of locationPatterns) {
         const locationMatch = text.match(pattern);
         if (locationMatch) {
-            result.location = locationMatch[0];
+            const fullLocation = locationMatch[0];
+            result.location = fullLocation;
+            // Extract city (first part before comma or before state abbreviation)
+            const cityMatch = fullLocation.match(/^([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/);
+            if (cityMatch) {
+                result.city = cityMatch[1];
+            }
             break;
         }
     }

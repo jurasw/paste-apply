@@ -1,6 +1,6 @@
 export const profileFields = [
     'firstName', 'lastName', 'email', 'phone',
-    'github', 'linkedin', 'portfolio', 'location', 'city', 'country'
+    'github', 'linkedin', 'portfolio', 'location', 'city', 'country', 'availability'
 ];
 export const resizeDimensions = { width: '400px', height: '600px' };
 export const maxFileSizeMb = 7;

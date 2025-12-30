@@ -1,6 +1,7 @@
 import { fieldMappings } from './field-matcher';
 import { findFieldByKeywords, findFieldByLabelText, findFieldByTextSearch } from './field-finder';
 import { uploadResumeFile } from './file-upload';
+import { fillRadioButtonGroup } from './field-filler';
 
 function showNotification(message, isSuccess) {
     const notification = document.createElement('div');
@@ -23,15 +24,23 @@ export function injectFillFunction(profileData, resumeData) {
         { key: 'github', label: 'GitHub', keywords: fieldMappings.github, labelKeywords: ['github', 'github profile', 'github url', 'github link'] },
         { key: 'linkedin', label: 'LinkedIn', keywords: fieldMappings.linkedin, labelKeywords: ['linkedin', 'linked-in', 'linkedin profile', 'linkedin url', 'linkedin link'] },
         { key: 'portfolio', label: 'Portfolio', keywords: fieldMappings.portfolio, labelKeywords: ['portfolio', 'website', 'portfolio url', 'portfolio link', 'personal website', 'strona', 'strona internetowa'] },
-        { key: 'location', label: 'Location', keywords: fieldMappings.location, labelKeywords: ['location', 'city', 'location field', 'city field', 'lokalizacja', 'miasto', 'miejsce zamieszkania', 'adres'] }
+        { key: 'city', label: 'City', keywords: fieldMappings.city, labelKeywords: ['city', 'city field', 'miasto'] },
+        { key: 'location', label: 'Location', keywords: fieldMappings.location, labelKeywords: ['location', 'location field', 'lokalizacja', 'miejsce zamieszkania', 'adres'] },
+        { key: 'availability', label: 'Availability', keywords: fieldMappings.availability, labelKeywords: ['availability', 'notice period', 'notice-period', 'notice_period', 'notice', 'available', 'start date', 'start-date', 'start_date', 'when can you start', 'when can you join'], isRadio: true }
     ];
     for (const processor of fieldProcessors) {
         const value = profileData[processor.key];
         if (value) {
             console.log(`[AutoFill] Trying to fill ${processor.label}...`);
-            const filled = findFieldByKeywords(processor.keywords, value) ||
-                findFieldByLabelText(processor.labelKeywords, value) ||
-                findFieldByTextSearch(processor.labelKeywords, value);
+            let filled = false;
+            if (processor.isRadio) {
+                filled = fillRadioButtonGroup(processor.keywords, value);
+            }
+            if (!filled) {
+                filled = findFieldByKeywords(processor.keywords, value) ||
+                    findFieldByLabelText(processor.labelKeywords, value) ||
+                    findFieldByTextSearch(processor.labelKeywords, value);
+            }
             if (filled) {
                 filledCount++;
                 results.push(processor.label);

@@ -6,8 +6,9 @@ export const fieldMappings = {
     github: ['github', 'github-url', 'github_url', 'github-link', 'github_link', 'github-profile'],
     linkedin: ['linkedin', 'linkedin-url', 'linkedin_url', 'linkedin-link', 'linkedin_link', 'linkedin-profile'],
     portfolio: ['portfolio', 'portfolio-url', 'portfolio_url', 'website', 'personal-website', 'personal_website', 'url', 'strona', 'strona internetowa', 'strona_internetowa'],
-    city: ['city', 'location city', 'location-city', 'location_city', 'town', 'municipality', 'miasto', 'miasto_field'],
+    city: ['city', 'location', 'location city', 'location-city', 'location_city', 'town', 'municipality', 'miasto', 'miasto_field'],
     country: ['country', 'location country', 'location-country', 'location_country', 'nation', 'kraj', 'kraj_field'],
+    availability: ['availability', 'notice period', 'notice-period', 'notice_period', 'notice', 'available', 'start date', 'start-date', 'start_date', 'when can you start', 'when can you join'],
     resume: ['resume', 'cv', 'resume-url', 'resume_url', 'cv-url', 'cv_url', 'życiorys', 'zyciorys', 'curriculum vitae']
 };
 export function getLabelText(input) {

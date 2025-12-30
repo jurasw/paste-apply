@@ -1,25 +1,34 @@
 import { getLabelText } from './field-matcher';
 import { fillInputField } from './field-filler';
-import { looksLikePhoneNumber, looksLikeEmail } from './validation';
+import { looksLikePhoneNumber, looksLikeEmail, looksLikeName } from './validation';
 
 export function findFieldByKeywords(keywords, value) {
     const keywordsSet = new Set(keywords.map(k => k.toLowerCase()));
     const allInputs = Array.from(document.querySelectorAll('input, textarea, select'));
     const emailKeywords = new Set(['email', 'e-mail', 'adres e-mail', 'adres email']);
     const phoneKeywords = new Set(['phone', 'telephone', 'telefon', 'numer telefonu', 'telefon komórkowy', 'komórka', 'mobile', 'cell', 'tel']);
-    const locationKeywords = new Set(['location', 'city', 'address', 'residence', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'miasto', 'kraj']);
+    const cityKeywords = new Set(['city', 'miasto']);
+    const locationKeywords = new Set(['location', 'address', 'residence', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'kraj']);
     for (const input of allInputs) {
         const htmlInput = input;
         if (htmlInput.tagName === 'INPUT') {
             const inputEl = htmlInput;
             if (inputEl.type === 'hidden' || inputEl.type === 'submit' || inputEl.type === 'button' || inputEl.type === 'file')
                 continue;
+            if (inputEl.type === 'radio' && !inputEl.checked) {
+                continue;
+            }
         }
         const currentValue = htmlInput.tagName === 'SELECT'
             ? htmlInput.value
             : htmlInput.value;
-        if (currentValue && currentValue.trim() !== '')
+        if (htmlInput.tagName === 'INPUT' && htmlInput.type === 'radio') {
+            if (htmlInput.checked) {
+                continue;
+            }
+        } else if (currentValue && currentValue.trim() !== '') {
             continue;
+        }
         const id = (htmlInput.id || '').toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, ' ');
         const name = (htmlInput.name || '').toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, ' ');
         const placeholder = (htmlInput.tagName === 'INPUT' ? htmlInput.placeholder : '') || '';
@@ -78,6 +87,13 @@ export function findFieldByKeywords(keywords, value) {
         if (isPhoneField && !looksLikePhoneNumber(value)) {
             continue;
         }
+        let isCityField = false;
+        for (const k of cityKeywords) {
+            if (searchText.includes(k)) {
+                isCityField = true;
+                break;
+            }
+        }
         let isLocationField = false;
         for (const k of locationKeywords) {
             if (searchText.includes(k)) {
@@ -85,8 +101,21 @@ export function findFieldByKeywords(keywords, value) {
                 break;
             }
         }
-        if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
+        // Reject values that look like names (but not locations) for location fields (but allow for city fields)
+        if (isLocationField && !isCityField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
             continue;
+        }
+        // Reject single-word capitalized values that look like names (not cities) for location fields
+        // Cities typically have commas, numbers (zip codes), or are common city names
+        if (isLocationField && !isCityField && looksLikeName(value)) {
+            const valueTrimmed = value.trim();
+            const hasLocationIndicators = valueTrimmed.includes(',') || valueTrimmed.match(/\d/) || 
+                valueTrimmed.split(/\s+/).length > 2; // Multi-word locations are likely addresses
+            // Single capitalized word without location indicators is likely a name, not a city
+            if (!hasLocationIndicators && valueTrimmed.split(/\s+/).length === 1 && 
+                valueTrimmed === valueTrimmed.charAt(0).toUpperCase() + valueTrimmed.slice(1).toLowerCase()) {
+                continue;
+            }
         }
         const fieldId = id || name || ariaLabel || 'unknown';
         return fillInputField(htmlInput, value, fieldId);
@@ -100,7 +129,8 @@ export function findFieldByLabelText(labelKeywords, value) {
     const allTextElements = Array.from(document.querySelectorAll('div, span, p, h1, h2, h3, h4, h5, h6'));
     const emailKeywords = new Set(['email', 'e-mail', 'adres e-mail', 'adres email']);
     const phoneKeywords = new Set(['phone', 'telephone', 'telefon', 'numer telefonu', 'telefon komórkowy', 'komórka', 'mobile', 'cell', 'tel']);
-    const locationKeywords = new Set(['location', 'city', 'address', 'residence', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'miasto', 'kraj']);
+    const cityKeywords = new Set(['city', 'miasto']);
+    const locationKeywords = new Set(['location', 'address', 'residence', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'kraj']);
     const fieldTypeKeywords = new Set(['first name', 'last name', 'email', 'phone', 'github', 'linkedin', 'website', 'portfolio', 'imię', 'imie', 'nazwisko', 'telefon', 'strona']);
     for (const label of labels) {
         let labelText = (label.textContent || '').toLowerCase();
@@ -150,6 +180,13 @@ export function findFieldByLabelText(labelKeywords, value) {
             if (isPhoneField && !looksLikePhoneNumber(value)) {
                 continue;
             }
+            let isCityField = false;
+            for (const k of cityKeywords) {
+                if (labelText.includes(k)) {
+                    isCityField = true;
+                    break;
+                }
+            }
             let isLocationField = false;
             for (const k of locationKeywords) {
                 if (labelText.includes(k)) {
@@ -157,8 +194,18 @@ export function findFieldByLabelText(labelKeywords, value) {
                     break;
                 }
             }
-            if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
+            if (isLocationField && !isCityField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
                 continue;
+            }
+            // Reject single-word capitalized values that look like names (not cities) for location fields
+            if (isLocationField && !isCityField && looksLikeName(value)) {
+                const valueTrimmed = value.trim();
+                const hasLocationIndicators = valueTrimmed.includes(',') || valueTrimmed.match(/\d/) || 
+                    valueTrimmed.split(/\s+/).length > 2;
+                if (!hasLocationIndicators && valueTrimmed.split(/\s+/).length === 1 && 
+                    valueTrimmed === valueTrimmed.charAt(0).toUpperCase() + valueTrimmed.slice(1).toLowerCase()) {
+                    continue;
+                }
             }
             const currentValue = input.tagName === 'SELECT'
                 ? input.value
@@ -219,6 +266,13 @@ export function findFieldByLabelText(labelKeywords, value) {
             if (isPhoneField && !looksLikePhoneNumber(value)) {
                 continue;
             }
+            let isCityField = false;
+            for (const k of cityKeywords) {
+                if (text.includes(k)) {
+                    isCityField = true;
+                    break;
+                }
+            }
             let isLocationField = false;
             for (const k of locationKeywords) {
                 if (text.includes(k)) {
@@ -226,8 +280,18 @@ export function findFieldByLabelText(labelKeywords, value) {
                     break;
                 }
             }
-            if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
+            if (isLocationField && !isCityField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
                 continue;
+            }
+            // Reject single-word capitalized values that look like names (not cities) for location fields
+            if (isLocationField && !isCityField && looksLikeName(value)) {
+                const valueTrimmed = value.trim();
+                const hasLocationIndicators = valueTrimmed.includes(',') || valueTrimmed.match(/\d/) || 
+                    valueTrimmed.split(/\s+/).length > 2;
+                if (!hasLocationIndicators && valueTrimmed.split(/\s+/).length === 1 && 
+                    valueTrimmed === valueTrimmed.charAt(0).toUpperCase() + valueTrimmed.slice(1).toLowerCase()) {
+                    continue;
+                }
             }
             const currentValue = input.tagName === 'SELECT'
                 ? input.value
@@ -244,7 +308,8 @@ export function findFieldByTextSearch(labelKeywords, value) {
     const keywordsSet = new Set(labelKeywords.map(k => k.toLowerCase()));
     const emailKeywords = new Set(['email', 'e-mail', 'adres e-mail', 'adres email']);
     const phoneKeywords = new Set(['phone', 'telephone', 'telefon', 'numer telefonu', 'telefon komórkowy', 'komórka', 'mobile', 'cell', 'tel']);
-    const locationKeywords = new Set(['location', 'city', 'address', 'residence', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'miasto', 'kraj']);
+    const cityKeywords = new Set(['city', 'miasto']);
+    const locationKeywords = new Set(['location', 'address', 'residence', 'lokalizacja', 'miejsce zamieszkania', 'adres', 'kraj']);
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
     let node = walker.nextNode();
     while (node) {
@@ -293,6 +358,13 @@ export function findFieldByTextSearch(labelKeywords, value) {
                 if (isPhoneField && !looksLikePhoneNumber(value)) {
                     continue;
                 }
+                let isCityField = false;
+                for (const k of cityKeywords) {
+                    if (textLower.includes(k)) {
+                        isCityField = true;
+                        break;
+                    }
+                }
                 let isLocationField = false;
                 for (const k of locationKeywords) {
                     if (textLower.includes(k)) {
@@ -300,8 +372,18 @@ export function findFieldByTextSearch(labelKeywords, value) {
                         break;
                     }
                 }
-                if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
+                if (isLocationField && !isCityField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
                     continue;
+                }
+                // Reject single-word capitalized values that look like names (not cities) for location fields
+                if (isLocationField && !isCityField && looksLikeName(value)) {
+                    const valueTrimmed = value.trim();
+                    const hasLocationIndicators = valueTrimmed.includes(',') || valueTrimmed.match(/\d/) || 
+                        valueTrimmed.split(/\s+/).length > 2;
+                    if (!hasLocationIndicators && valueTrimmed.split(/\s+/).length === 1 && 
+                        valueTrimmed === valueTrimmed.charAt(0).toUpperCase() + valueTrimmed.slice(1).toLowerCase()) {
+                        continue;
+                    }
                 }
                 const currentValue = htmlInput.tagName === 'SELECT'
                     ? htmlInput.value
