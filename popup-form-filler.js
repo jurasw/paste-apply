@@ -1,4 +1,14 @@
 export function injectFillFunction(profileData, resumeData) {
+    function looksLikePhoneNumber(value) {
+        const cleaned = value.replace(/[\s\-\(\)\+]/g, '');
+        return /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && cleaned.length >= 7 && /^\d+$/.test(cleaned);
+    }
+    function looksLikeEmail(value) {
+        return value.includes('@') && value.includes('.');
+    }
+    function looksLikeName(value) {
+        return !looksLikePhoneNumber(value) && !looksLikeEmail(value) && /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s\-']+$/.test(value.trim());
+    }
     const fieldMappings = {
         firstName: ['firstname', 'first-name', 'first_name', 'fname', 'given-name', 'given_name', 'name', 'imię', 'imie', 'imie_field', 'imię_field'],
         lastName: ['lastname', 'last-name', 'last_name', 'lname', 'family-name', 'family_name', 'surname', 'nazwisko', 'nazwisko_field'],
@@ -261,14 +271,14 @@ export function injectFillFunction(profileData, resumeData) {
                                         searchText.includes('telefon') || searchText.includes('numer telefonu') || 
                                         searchText.includes('telefon komórkowy') || searchText.includes('komórka') ||
                                         searchText.includes('mobile') || searchText.includes('cell') || searchText.includes('tel');
-                    if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                    if (isPhoneField && !looksLikePhoneNumber(value)) {
                         continue;
                     }
                     const isLocationField = searchText.includes('location') || searchText.includes('city') || 
                                           searchText.includes('address') || searchText.includes('residence') ||
                                           searchText.includes('lokalizacja') || searchText.includes('miejsce zamieszkania') ||
                                           searchText.includes('adres') || searchText.includes('miasto') || searchText.includes('kraj');
-                    if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                    if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
                         continue;
                     }
                     const fieldId = id || name || ariaLabel || 'unknown';
@@ -308,20 +318,20 @@ export function injectFillFunction(profileData, resumeData) {
                     if (isEmailField && !value.includes('@')) {
                         continue;
                     }
-                    const isPhoneField = labelText.includes('phone') || labelText.includes('telephone') || 
-                                       labelText.includes('telefon') || labelText.includes('numer telefonu') || 
-                                       labelText.includes('telefon komórkowy') || labelText.includes('komórka') ||
-                                       labelText.includes('mobile') || labelText.includes('cell') || labelText.includes('tel');
-                    if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
-                        continue;
-                    }
-                    const isLocationField = labelText.includes('location') || labelText.includes('city') || 
-                                          labelText.includes('address') || labelText.includes('residence') ||
-                                          labelText.includes('lokalizacja') || labelText.includes('miejsce zamieszkania') ||
-                                          labelText.includes('adres') || labelText.includes('miasto') || labelText.includes('kraj');
-                    if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
-                        continue;
-                    }
+                        const isPhoneField = labelText.includes('phone') || labelText.includes('telephone') || 
+                                           labelText.includes('telefon') || labelText.includes('numer telefonu') || 
+                                           labelText.includes('telefon komórkowy') || labelText.includes('komórka') ||
+                                           labelText.includes('mobile') || labelText.includes('cell') || labelText.includes('tel');
+                        if (isPhoneField && !looksLikePhoneNumber(value)) {
+                            continue;
+                        }
+                        const isLocationField = labelText.includes('location') || labelText.includes('city') || 
+                                              labelText.includes('address') || labelText.includes('residence') ||
+                                              labelText.includes('lokalizacja') || labelText.includes('miejsce zamieszkania') ||
+                                              labelText.includes('adres') || labelText.includes('miasto') || labelText.includes('kraj');
+                        if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
+                            continue;
+                        }
                     const currentValue = input.tagName === 'SELECT'
                         ? input.value
                         : input.value;
@@ -358,14 +368,14 @@ export function injectFillFunction(profileData, resumeData) {
                                            text.includes('telefon') || text.includes('numer telefonu') || 
                                            text.includes('telefon komórkowy') || text.includes('komórka') ||
                                            text.includes('mobile') || text.includes('cell') || text.includes('tel');
-                        if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                        if (isPhoneField && !looksLikePhoneNumber(value)) {
                             continue;
                         }
                         const isLocationField = text.includes('location') || text.includes('city') || 
                                               text.includes('address') || text.includes('residence') ||
                                               text.includes('lokalizacja') || text.includes('miejsce zamieszkania') ||
                                               text.includes('adres') || text.includes('miasto') || text.includes('kraj');
-                        if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                        if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
                             continue;
                         }
                         const currentValue = input.tagName === 'SELECT'
@@ -405,14 +415,14 @@ export function injectFillFunction(profileData, resumeData) {
                                                textLower.includes('telefon') || textLower.includes('numer telefonu') || 
                                                textLower.includes('telefon komórkowy') || textLower.includes('komórka') ||
                                                textLower.includes('mobile') || textLower.includes('cell') || textLower.includes('tel');
-                            if (isPhoneField && (value.includes('@') || value.includes('http') || value.includes('www.'))) {
+                            if (isPhoneField && !looksLikePhoneNumber(value)) {
                                 continue;
                             }
                             const isLocationField = textLower.includes('location') || textLower.includes('city') || 
                                                   textLower.includes('address') || textLower.includes('residence') ||
                                                   textLower.includes('lokalizacja') || textLower.includes('miejsce zamieszkania') ||
                                                   textLower.includes('adres') || textLower.includes('miasto') || textLower.includes('kraj');
-                            if (isLocationField && (value.includes('@') || /^\+?[\d\s\-\(\)]+$/.test(value.trim()) && value.replace(/[\s\-\(\)]/g, '').length >= 7)) {
+                            if (isLocationField && (looksLikePhoneNumber(value) || looksLikeEmail(value))) {
                                 continue;
                             }
                             const currentValue = htmlInput.tagName === 'SELECT'
