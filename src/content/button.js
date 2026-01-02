@@ -228,6 +228,7 @@ function createButtonElement() {
       line-height: 1;
       user-select: none;
       touch-action: none;
+      width: 180px;
     `;
         button.style.setProperty("background", "#3566E6", "important");
         if (
@@ -277,6 +278,7 @@ function createButtonElement() {
       line-height: 1;
       user-select: none;
       touch-action: none;
+      width: 180px;
     `;
     button.style.setProperty("background", "#3566E6", "important");
   }
